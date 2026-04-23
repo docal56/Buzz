@@ -33,7 +33,7 @@ const strokeProps = {
 
 export function IconAddImage(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M9.37492 16.0417H5.62492C4.70444 16.0417 3.95825 15.2955 3.95825 14.375V13.3333M3.95825 13.3333V5.62501C3.95825 4.70454 4.70444 3.95834 5.62492 3.95834H14.3749C15.2954 3.95834 16.0416 4.70454 16.0416 5.62501V10.2083L13.8213 7.86624C13.1385 7.07152 11.9012 7.09666 11.251 7.91682L11.2428 7.92746C11.1647 8.02846 9.96834 9.57576 9.10467 10.6745M3.95825 13.3333L6.24674 10.4223C6.89567 9.59676 8.13703 9.56976 8.82125 10.3663L9.10467 10.6745M9.10467 10.6745L10.2083 11.875M9.10467 10.6745C9.10167 10.6783 9.09875 10.6821 9.09575 10.6858"
@@ -57,7 +57,7 @@ export function IconAddImage(props: IconProps) {
 
 export function IconAiAgent(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M19.25 12.75V17.25C19.25 18.3546 18.3546 19.25 17.25 19.25H6.75C5.64543 19.25 4.75 18.3546 4.75 17.25V6.75C4.75 5.64543 5.64543 4.75 6.75 4.75H11.25M8.19234 19C8.6918 17.5752 9.75228 16 12 16C14.2477 16 15.3082 17.5752 15.8077 19M14.25 11C14.25 12.2426 13.2426 13.25 12 13.25C10.7574 13.25 9.75 12.2426 9.75 11C9.75 9.75736 10.7574 8.75 12 8.75C13.2426 8.75 14.25 9.75736 14.25 11ZM16.9999 4.75L16.3571 6.35705L14.75 6.9999L16.3571 7.64273L17 9.25L17.6429 7.64274L19.25 6.9999L17.6427 6.35699L16.9999 4.75Z"
         {...strokeProps}
@@ -68,7 +68,7 @@ export function IconAiAgent(props: IconProps) {
 
 export function IconArchive(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M18.25 8.75H5.75L6.57758 17.4396C6.67534 18.4661 7.53746 19.25 8.56857 19.25H15.4314C16.4625 19.25 17.3247 18.4661 17.4224 17.4396L18.25 8.75Z"
         {...strokeProps}
@@ -84,7 +84,7 @@ export function IconArchive(props: IconProps) {
 
 export function IconArrowDown(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M14.375 11.4583L10 16.0417L5.625 11.4583"
@@ -103,7 +103,7 @@ export function IconArrowDown(props: IconProps) {
 
 export function IconArrowRight(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M13.75 6.75L19.25 12L13.75 17.25" {...strokeProps} />
       <path d="M19 12H4.75" {...strokeProps} />
     </svg>
@@ -112,7 +112,7 @@ export function IconArrowRight(props: IconProps) {
 
 export function IconArrowUp(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M14.375 8.54167L10 3.95833L5.625 8.54167"
@@ -131,7 +131,7 @@ export function IconArrowUp(props: IconProps) {
 
 export function IconArrowUpRight(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M17.25 15.25V6.75H8.75" {...strokeProps} />
       <path d="M17 7L6.75 17.25" {...strokeProps} />
     </svg>
@@ -140,7 +140,7 @@ export function IconArrowUpRight(props: IconProps) {
 
 export function IconCalendar(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M4.75 8.75C4.75 7.64543 5.64543 6.75 6.75 6.75H17.25C18.3546 6.75 19.25 7.64543 19.25 8.75V17.25C19.25 18.3546 18.3546 19.25 17.25 19.25H6.75C5.64543 19.25 4.75 18.3546 4.75 17.25V8.75Z"
         {...strokeProps}
@@ -154,7 +154,7 @@ export function IconCalendar(props: IconProps) {
 
 export function IconCallIncoming(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M8.89286 4.75H6.06818C5.34017 4.75 4.75 5.34017 4.75 6.06818C4.75 13.3483 10.6517 19.25 17.9318 19.25C18.6598 19.25 19.25 18.6598 19.25 17.9318V15.1071L16.1429 13.0357L14.5317 14.6468C14.2519 14.9267 13.8337 15.0137 13.4821 14.8321C12.8858 14.524 11.9181 13.9452 10.9643 13.0357C9.98768 12.1045 9.41548 11.1011 9.12829 10.494C8.96734 10.1537 9.06052 9.76091 9.32669 9.49474L10.9643 7.85714L8.89286 4.75Z"
         {...strokeProps}
@@ -167,7 +167,7 @@ export function IconCallIncoming(props: IconProps) {
 
 export function IconCaretDown(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M11.2318 14.0781C11.6316 14.5579 12.3684 14.5579 12.7682 14.0781L15.6332 10.6402C16.176 9.98886 15.7128 9 14.865 9H9.13504C8.2872 9 7.82405 9.98886 8.36682 10.6402L11.2318 14.0781Z"
         fill="currentColor"
@@ -178,7 +178,7 @@ export function IconCaretDown(props: IconProps) {
 
 export function IconCaretRight(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M14.0781 12.7682C14.5579 12.3684 14.5579 11.6316 14.0781 11.2318L10.6402 8.36682C9.98886 7.82405 9 8.2872 9 9.13504V14.865C9 15.7128 9.98886 16.176 10.6402 15.6332L14.0781 12.7682Z"
         fill="currentColor"
@@ -192,7 +192,7 @@ export function IconCheck({
   ...props
 }: IconProps & { strokeWidth?: number }) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M7.75 13.0577L10.3971 15.75L17.75 8.75"
         stroke="currentColor"
@@ -206,7 +206,7 @@ export function IconCheck({
 
 export function IconChevronDown(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M7 9.5L12.3167 15L17.6333 9.5" {...strokeProps} />
     </svg>
   );
@@ -214,7 +214,7 @@ export function IconChevronDown(props: IconProps) {
 
 export function IconChevronRight(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M9 7L14.5 12.3167L9 17.6333" {...strokeProps} />
     </svg>
   );
@@ -222,7 +222,7 @@ export function IconChevronRight(props: IconProps) {
 
 export function IconCircleAlert(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M19.25 12.25C19.25 16.2541 16.0041 19.5 12 19.5C7.99594 19.5 4.75 16.2541 4.75 12.25C4.75 8.24594 7.99594 5 12 5C16.0041 5 19.25 8.24594 19.25 12.25Z"
         {...strokeProps}
@@ -238,7 +238,7 @@ export function IconCircleAlert(props: IconProps) {
 
 export function IconClose(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M14.375 5.625L5.625 14.375"
@@ -257,7 +257,7 @@ export function IconClose(props: IconProps) {
 
 export function IconContact(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M6.75 19C6.75 19 8 15.75 12 15.75C16 15.75 17.25 19 17.25 19M14.25 10C14.25 10.5967 14.0129 11.169 13.591 11.591C13.169 12.0129 12.5967 12.25 12 12.25C11.4033 12.25 10.831 12.0129 10.409 11.591C9.98705 11.169 9.75 10.5967 9.75 10C9.75 9.40326 9.98705 8.83097 10.409 8.40901C10.831 7.98705 11.4033 7.75 12 7.75C12.5967 7.75 13.169 7.98705 13.591 8.40901C14.0129 8.83097 14.25 9.40326 14.25 10ZM7.75 19.25H16.25C17.0456 19.25 17.8087 18.9339 18.3713 18.3713C18.9339 17.8087 19.25 17.0456 19.25 16.25V7.75C19.25 6.95435 18.9339 6.19129 18.3713 5.62868C17.8087 5.06607 17.0456 4.75 16.25 4.75H7.75C6.95435 4.75 6.19129 5.06607 5.62868 5.62868C5.06607 6.19129 4.75 6.95435 4.75 7.75V16.25C4.75 17.0456 5.06607 17.8087 5.62868 18.3713C6.19129 18.9339 6.95435 19.25 7.75 19.25Z"
         {...strokeProps}
@@ -268,7 +268,7 @@ export function IconContact(props: IconProps) {
 
 export function IconContacts(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M16.75 4.75H18.25C18.5152 4.75 18.7696 4.85536 18.9571 5.04289C19.1446 5.23043 19.25 5.48478 19.25 5.75V8.25M16.75 4.75H7.75C6.95435 4.75 6.19129 5.06607 5.62868 5.62868C5.06607 6.19129 4.75 6.95435 4.75 7.75V16.25C4.75 17.0456 5.06607 17.8087 5.62868 18.3713C6.19129 18.9339 6.95435 19.25 7.75 19.25H16.75M16.75 4.75V8.25M19.25 8.25H16.75M19.25 8.25V12M16.75 19.25H18.25C18.5152 19.25 18.7696 19.1446 18.9571 18.9571C19.1446 18.7696 19.25 18.5152 19.25 18.25V15.75M16.75 19.25V15.75M16.75 8.25V12M19.25 15.75H16.75M19.25 15.75V12M16.75 15.75V12M16.75 12H19.25M8.75 15.25C8.75 15.25 9.425 13.75 11 13.75C12.575 13.75 13.25 15.25 13.25 15.25M12.25 10C12.25 10.3315 12.1183 10.6495 11.8839 10.8839C11.6495 11.1183 11.3315 11.25 11 11.25C10.6685 11.25 10.3505 11.1183 10.1161 10.8839C9.8817 10.6495 9.75 10.3315 9.75 10C9.75 9.66848 9.8817 9.35054 10.1161 9.11612C10.3505 8.8817 10.6685 8.75 11 8.75C11.3315 8.75 11.6495 8.8817 11.8839 9.11612C12.1183 9.35054 12.25 9.66848 12.25 10Z"
         {...strokeProps}
@@ -279,7 +279,7 @@ export function IconContacts(props: IconProps) {
 
 export function IconCopy(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M5.41659 12.7083C4.61117 12.7083 3.95825 12.0554 3.95825 11.25V5.62501C3.95825 4.70454 4.70444 3.95834 5.62492 3.95834H11.2499C12.0553 3.95834 12.7083 4.61126 12.7083 5.41668"
@@ -298,7 +298,7 @@ export function IconCopy(props: IconProps) {
 
 export function IconEmail(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M4.75 7.75C4.75 6.64543 5.64543 5.75 6.75 5.75H17.25C18.3546 5.75 19.25 6.64543 19.25 7.75V16.25C19.25 17.3546 18.3546 18.25 17.25 18.25H6.75C5.64543 18.25 4.75 17.3546 4.75 16.25V7.75Z"
         {...strokeProps}
@@ -310,7 +310,7 @@ export function IconEmail(props: IconProps) {
 
 export function IconEndArrowClose(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M4.75 4.75V19.25" {...strokeProps} />
       <path d="M8.75 12H19.25" {...strokeProps} />
       <path d="M15.75 8.75L19.25 12L15.75 15.25" {...strokeProps} />
@@ -320,7 +320,7 @@ export function IconEndArrowClose(props: IconProps) {
 
 export function IconFilter(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M4.75 7C4.33579 7 4 7.33579 4 7.75C4 8.16421 4.33579 8.5 4.75 8.5V7ZM19.25 8.5C19.6642 8.5 20 8.16421 20 7.75C20 7.33579 19.6642 7 19.25 7V8.5ZM4.75 8.5H19.25V7H4.75V8.5Z"
         fill="currentColor"
@@ -339,7 +339,7 @@ export function IconFilter(props: IconProps) {
 
 export function IconInbox(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M19.25 11.75L17.6644 6.20056C17.4191 5.34195 16.6344 4.75 15.7414 4.75H8.2586C7.36564 4.75 6.58087 5.34196 6.33555 6.20056L4.75 11.75"
         {...strokeProps}
@@ -354,7 +354,7 @@ export function IconInbox(props: IconProps) {
 
 export function IconIntegrations(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M4.75 6.75V8.25C4.75 9.35457 5.64543 10.25 6.75 10.25H8.25C9.35457 10.25 10.25 9.35457 10.25 8.25V6.75C10.25 5.64543 9.35457 4.75 8.25 4.75H6.75C5.64543 4.75 4.75 5.64543 4.75 6.75Z"
         {...strokeProps}
@@ -375,7 +375,7 @@ export function IconIntegrations(props: IconProps) {
 
 export function IconMenu(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
         {...strokeProps}
@@ -394,7 +394,7 @@ export function IconMenu(props: IconProps) {
 
 export function IconMessage(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M12 18.25C15.5 18.25 19.25 16.5 19.25 12C19.25 7.5 15.5 5.75 12 5.75C8.5 5.75 4.75 7.5 4.75 12C4.75 13.0298 4.94639 13.9156 5.29123 14.6693C5.50618 15.1392 5.62675 15.6573 5.53154 16.1651L5.26934 17.5635C5.13974 18.2547 5.74527 18.8603 6.43651 18.7307L9.64388 18.1293C9.896 18.082 10.1545 18.0861 10.4078 18.1263C10.935 18.2099 11.4704 18.25 12 18.25Z"
         {...strokeProps}
@@ -423,7 +423,7 @@ export function IconMessage(props: IconProps) {
 
 export function IconNote(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M13.75 19.25H6.75C6.21957 19.25 5.71086 19.0393 5.33579 18.6642C4.96071 18.2891 4.75 17.7804 4.75 17.25V6.75C4.75 6.21957 4.96071 5.71086 5.33579 5.33579C5.71086 4.96071 6.21957 4.75 6.75 4.75H17.25C17.7804 4.75 18.2891 4.96071 18.6642 5.33579C19.0393 5.71086 19.25 6.21957 19.25 6.75V13.75M13.75 19.25L19.25 13.75M13.75 19.25V14.75C13.75 14.4848 13.8554 14.2304 14.0429 14.0429C14.2304 13.8554 14.4848 13.75 14.75 13.75H19.25"
         {...strokeProps}
@@ -434,7 +434,7 @@ export function IconNote(props: IconProps) {
 
 export function IconPause(props: IconProps) {
   return (
-    <svg {...baseProps} fill="currentColor" {...props}>
+    <svg aria-hidden={true} {...baseProps} fill="currentColor" {...props}>
       <rect height="14.5" rx="1" width="3.5" x="6.5" y="4.75" />
       <rect height="14.5" rx="1" width="3.5" x="14" y="4.75" />
     </svg>
@@ -443,7 +443,7 @@ export function IconPause(props: IconProps) {
 
 export function IconPlay(props: IconProps) {
   return (
-    <svg {...baseProps} fill="currentColor" {...props}>
+    <svg aria-hidden={true} {...baseProps} fill="currentColor" {...props}>
       <path d="M8 5.14V18.86C8 19.65 8.86 20.14 9.54 19.74L20.46 13.38C21.13 12.99 21.13 12.01 20.46 11.62L9.54 5.26C8.86 4.86 8 5.35 8 6.14V5.14Z" />
     </svg>
   );
@@ -451,7 +451,7 @@ export function IconPlay(props: IconProps) {
 
 export function IconSearch(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M19.25 19.25L15.5 15.5M4.75 11C4.75 7.54822 7.54822 4.75 11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 14.4518 14.4518 17.25 11 17.25C7.54822 17.25 4.75 14.4518 4.75 11Z"
         {...strokeProps}
@@ -462,7 +462,7 @@ export function IconSearch(props: IconProps) {
 
 export function IconSelector(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path
         d="M15.5 9.36L12 6L8.5 9.36M15.5 14.64L12 18L8.5 14.64"
         {...strokeProps}
@@ -473,7 +473,7 @@ export function IconSelector(props: IconProps) {
 
 export function IconSettings(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <path d="M4.75 8H7.25" {...strokeProps} />
       <path d="M12.75 8H19.25" {...strokeProps} />
       <path d="M4.75 16H12.25" {...strokeProps} />
@@ -492,7 +492,7 @@ export function IconSettings(props: IconProps) {
 
 export function IconUploadMedia(props: IconProps) {
   return (
-    <svg {...baseProps} {...props}>
+    <svg aria-hidden={true} {...baseProps} {...props}>
       <g transform="scale(1.2)">
         <path
           d="M9.37492 16.0417H5.62492C4.70444 16.0417 3.95825 15.2955 3.95825 14.375V13.3333M3.95825 13.3333V5.62501C3.95825 4.70454 4.70444 3.95834 5.62492 3.95834H14.3749C15.2954 3.95834 16.0416 4.70454 16.0416 5.62501V10.2083L13.8213 7.86624C13.1385 7.07152 11.9012 7.09666 11.251 7.91682L11.2428 7.92746C11.1647 8.02846 9.96834 9.57576 9.10467 10.6745M3.95825 13.3333L6.24674 10.4223C6.89567 9.59676 8.13703 9.56976 8.82125 10.3663L9.10467 10.6745M9.10467 10.6745L10.2083 11.875M9.10467 10.6745C9.10167 10.6783 9.09875 10.6821 9.09575 10.6858"

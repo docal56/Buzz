@@ -24,6 +24,7 @@ export function ButtonGroup({
 }: ButtonGroupProps) {
   const items = Children.toArray(children).filter(Boolean);
   return (
+    // biome-ignore lint/a11y/useSemanticElements: no native HTML equivalent for a generic button group; role="group" is the WAI-ARIA recommendation
     <div
       className={cn(
         "inline-flex items-center overflow-hidden rounded-md border border-border-strong bg-background",

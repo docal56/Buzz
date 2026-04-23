@@ -52,6 +52,7 @@ export const IssueListRow = forwardRef<HTMLDivElement, IssueListRowProps>(
     };
 
     return (
+      // biome-ignore lint/a11y/useSemanticElements: contains a nested interactive <Checkbox>; a real <button> can't contain interactive children
       <div
         className={cn(
           "flex h-10 cursor-pointer items-center gap-4 p-2 transition-colors",
@@ -70,6 +71,7 @@ export const IssueListRow = forwardRef<HTMLDivElement, IssueListRowProps>(
         tabIndex={0}
         {...rest}
       >
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: wrapper only stops click propagation so the nested checkbox can be toggled without opening the row */}
         <div
           className="inline-flex shrink-0 items-center justify-center"
           onClick={(e) => e.stopPropagation()}

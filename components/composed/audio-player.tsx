@@ -52,13 +52,13 @@ export function AudioPlayer({
         {currentTime}
       </span>
       <div
-        aria-label="Seek"
+        aria-label="Playback progress"
         aria-valuemax={1}
         aria-valuemin={0}
         aria-valuenow={clampedProgress}
         aria-valuetext={`${currentTime} of ${duration}`}
         className="relative h-1.5 flex-1 rounded-full bg-border"
-        role="slider"
+        role="progressbar"
       >
         <div
           className="absolute top-0 left-0 h-1.5 rounded-full bg-inverse"

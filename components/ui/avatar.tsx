@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,11 @@ const sizeStyles: Record<AvatarSize, string> = {
   md: "size-8 text-sm",
 };
 
+const sizePx: Record<AvatarSize, number> = {
+  sm: 24,
+  md: 32,
+};
+
 export function Avatar({
   size = "md",
   initials,
@@ -23,6 +29,7 @@ export function Avatar({
   className,
   ...rest
 }: AvatarProps) {
+  const px = sizePx[size];
   return (
     <span
       className={cn(
@@ -33,7 +40,14 @@ export function Avatar({
       {...rest}
     >
       {src ? (
-        <img alt={alt ?? ""} className="size-full object-cover" src={src} />
+        <Image
+          alt={alt ?? ""}
+          className="size-full object-cover"
+          height={px}
+          src={src}
+          unoptimized
+          width={px}
+        />
       ) : (
         <span aria-hidden={alt ? undefined : true}>{initials}</span>
       )}

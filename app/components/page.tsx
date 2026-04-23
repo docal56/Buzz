@@ -586,9 +586,9 @@ export default function ComponentsPreviewPage() {
             <Example label="Section Block">
               <SectionBlock
                 action={
-                  <a className="hover:underline" href="#">
+                  <button className="hover:underline" type="button">
                     Edit
-                  </a>
+                  </button>
                 }
                 title="Details"
               >
