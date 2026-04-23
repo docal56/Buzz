@@ -9,8 +9,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Property Management",
-  description: "Property management app",
+  title: "Buzz",
+  description: "Buzz",
 };
 
 export default function RootLayout({
