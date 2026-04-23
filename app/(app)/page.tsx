@@ -176,12 +176,12 @@ export default function OpenIssuesPage() {
   const selectedIssue = currentIndex >= 0 ? flatIssues[currentIndex] : null;
 
   const goPrev = () => {
-    if (currentIndex > 0) setSelectedId(flatIssues[currentIndex - 1].id);
+    const prev = flatIssues[currentIndex - 1];
+    if (prev) setSelectedId(prev.id);
   };
   const goNext = () => {
-    if (currentIndex >= 0 && currentIndex < flatIssues.length - 1) {
-      setSelectedId(flatIssues[currentIndex + 1].id);
-    }
+    const next = flatIssues[currentIndex + 1];
+    if (next) setSelectedId(next.id);
   };
 
   return (
