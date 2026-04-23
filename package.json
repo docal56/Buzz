@@ -8,7 +8,8 @@
     "start": "next start",
     "check": "biome check .",
     "check:write": "biome check --write .",
-    "check:unsafe": "biome check --write --unsafe ."
+    "check:unsafe": "biome check --write --unsafe .",
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.2.3",
@@ -22,11 +23,13 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
     "@tailwindcss/postcss": "^4",
+    "@total-typescript/ts-reset": "^0.6.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript/native-preview": "7.0.0-dev.20260423.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^6.0.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
