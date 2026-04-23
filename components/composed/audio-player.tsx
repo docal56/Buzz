@@ -1,8 +1,8 @@
 "use client";
 
 import type { HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
 import { IconPause, IconPlay } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface AudioPlayerProps extends HTMLAttributes<HTMLDivElement> {
   playing?: boolean;
@@ -29,18 +29,18 @@ export function AudioPlayer({
 
   return (
     <div
-      className={cn("flex items-center w-full h-12 px-4 gap-4", className)}
+      className={cn("flex h-12 w-full items-center gap-4 px-4", className)}
       {...rest}
     >
       <button
-        type="button"
-        onClick={onPlayPauseClick}
         aria-label={playing ? "Pause" : "Play"}
         className={cn(
-          "inline-flex items-center justify-center shrink-0 rounded-full size-8 bg-inverse text-inverse-foreground transition-colors",
+          "inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-inverse text-inverse-foreground transition-colors",
           "hover:opacity-90",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
         )}
+        onClick={onPlayPauseClick}
+        type="button"
       >
         {playing ? (
           <IconPause className="size-3" />
@@ -48,17 +48,17 @@ export function AudioPlayer({
           <IconPlay className="size-3" />
         )}
       </button>
-      <span className="w-10 shrink-0 text-sm text-muted-foreground tabular-nums">
+      <span className="w-10 shrink-0 text-muted-foreground text-sm tabular-nums">
         {currentTime}
       </span>
       <div
-        role="slider"
         aria-label="Seek"
-        aria-valuemin={0}
         aria-valuemax={1}
+        aria-valuemin={0}
         aria-valuenow={clampedProgress}
         aria-valuetext={`${currentTime} of ${duration}`}
-        className="relative flex-1 h-1.5 rounded-full bg-border"
+        className="relative h-1.5 flex-1 rounded-full bg-border"
+        role="slider"
       >
         <div
           className="absolute top-0 left-0 h-1.5 rounded-full bg-inverse"
@@ -66,12 +66,16 @@ export function AudioPlayer({
         />
         {playing ? (
           <div
-            className="absolute rounded-full bg-background border-2 border-inverse size-3"
-            style={{ left: percent, top: "-3px", transform: "translateX(-50%)" }}
+            className="absolute size-3 rounded-full border-2 border-inverse bg-background"
+            style={{
+              left: percent,
+              top: "-3px",
+              transform: "translateX(-50%)",
+            }}
           />
         ) : null}
       </div>
-      <span className="w-10 shrink-0 text-right text-sm text-muted-foreground tabular-nums">
+      <span className="w-10 shrink-0 text-right text-muted-foreground text-sm tabular-nums">
         {duration}
       </span>
     </div>

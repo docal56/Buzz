@@ -18,8 +18,8 @@ export function MetricCardGroup({
   return (
     <div
       className={cn(
-        "flex rounded-md overflow-hidden bg-background border border-border",
-        "[&>*+*]:border-l [&>*+*]:border-border",
+        "flex overflow-hidden rounded-md border border-border bg-background",
+        "[&>*+*]:border-border [&>*+*]:border-l",
         className,
       )}
       {...rest}
@@ -36,12 +36,9 @@ export function MetricCard({
   ...rest
 }: MetricCardProps) {
   return (
-    <div
-      className={cn("flex flex-col flex-1 gap-3 p-4", className)}
-      {...rest}
-    >
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-2xl font-medium leading-tight text-foreground">
+    <div className={cn("flex flex-1 flex-col gap-3 p-4", className)} {...rest}>
+      <span className="text-muted-foreground text-sm">{label}</span>
+      <span className="font-medium text-2xl text-foreground leading-tight">
         {value}
       </span>
     </div>

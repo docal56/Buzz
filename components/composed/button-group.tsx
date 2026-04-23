@@ -1,7 +1,7 @@
 import {
+  type ButtonHTMLAttributes,
   Children,
   Fragment,
-  type ButtonHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
 } from "react";
@@ -25,19 +25,20 @@ export function ButtonGroup({
   const items = Children.toArray(children).filter(Boolean);
   return (
     <div
-      role="group"
       className={cn(
-        "inline-flex items-center rounded-md border border-border-strong bg-background overflow-hidden",
+        "inline-flex items-center overflow-hidden rounded-md border border-border-strong bg-background",
         className,
       )}
+      role="group"
       {...rest}
     >
       {items.map((child, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: children order is stable; index is the intentional identity for separator insertion
         <Fragment key={i}>
           {i > 0 ? (
             <span
               aria-hidden
-              className="self-center w-px h-5 bg-border shrink-0"
+              className="h-5 w-px shrink-0 self-center bg-border"
             />
           ) : null}
           {child}
@@ -55,15 +56,15 @@ export function ButtonGroupItem({
 }: ButtonGroupItemProps) {
   return (
     <button
-      type={type}
       className={cn(
-        "inline-flex items-center justify-center w-9 h-8 shrink-0 text-foreground transition-colors",
+        "inline-flex h-8 w-9 shrink-0 items-center justify-center text-foreground transition-colors",
         "hover:bg-subtle",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring",
-        "disabled:bg-transparent disabled:text-disabled disabled:cursor-not-allowed",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+        "disabled:cursor-not-allowed disabled:bg-transparent disabled:text-disabled",
         "[&>svg]:size-4",
         className,
       )}
+      type={type}
       {...rest}
     >
       {icon}

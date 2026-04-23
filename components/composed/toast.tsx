@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import { IconClose } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface ToastProps extends HTMLAttributes<HTMLDivElement> {
   /** Leading icon — typically IconCheck (success) or IconAlertCircle (danger). */
@@ -20,29 +20,29 @@ export function Toast({
 }: ToastProps) {
   return (
     <div
-      role="status"
       aria-live="polite"
       className={cn(
-        "flex items-center w-full max-w-90 rounded-md py-3 px-4 gap-3 bg-background shadow-sm",
+        "flex w-full max-w-90 items-center gap-3 rounded-md bg-background px-4 py-3 shadow-sm",
         className,
       )}
+      role="status"
       {...rest}
     >
       {icon ? (
         <span
           aria-hidden
-          className="inline-flex items-center justify-center shrink-0 size-5 [&>svg]:size-4 text-foreground"
+          className="inline-flex size-5 shrink-0 items-center justify-center text-foreground [&>svg]:size-4"
         >
           {icon}
         </span>
       ) : null}
-      <span className="flex-1 min-w-0 text-sm text-foreground">{children}</span>
+      <span className="min-w-0 flex-1 text-foreground text-sm">{children}</span>
       {onDismiss ? (
         <button
-          type="button"
-          onClick={onDismiss}
           aria-label={dismissLabel}
-          className="inline-flex items-center justify-center shrink-0 size-5 text-foreground rounded-sm hover:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-foreground hover:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          onClick={onDismiss}
+          type="button"
         >
           <IconClose className="size-3.5" />
         </button>

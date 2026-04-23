@@ -26,14 +26,14 @@ export function Avatar({
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-full bg-inverse text-inverse-foreground font-medium shrink-0 overflow-hidden select-none",
+        "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-inverse font-medium text-inverse-foreground",
         sizeStyles[size],
         className,
       )}
       {...rest}
     >
       {src ? (
-        <img src={src} alt={alt ?? ""} className="size-full object-cover" />
+        <img alt={alt ?? ""} className="size-full object-cover" src={src} />
       ) : (
         <span aria-hidden={alt ? undefined : true}>{initials}</span>
       )}

@@ -17,28 +17,29 @@ export function TranscriptBubble({
   className,
   ...rest
 }: TranscriptBubbleProps) {
-  const alignmentClasses =
-    speaker === "agent" ? "items-start" : "items-end";
+  const alignmentClasses = speaker === "agent" ? "items-start" : "items-end";
   const bubbleClasses =
-    speaker === "agent"
-      ? "bg-subtle self-start"
-      : "bg-info-soft self-end";
+    speaker === "agent" ? "bg-subtle self-start" : "bg-info-soft self-end";
 
   return (
     <div
-      className={cn("flex flex-col max-w-[70%] gap-1", alignmentClasses, className)}
+      className={cn(
+        "flex max-w-[70%] flex-col gap-1",
+        alignmentClasses,
+        className,
+      )}
       {...rest}
     >
       <div
         className={cn(
-          "inline-flex rounded-lg py-2.5 px-3 text-sm text-foreground leading-normal",
+          "inline-flex rounded-lg px-3 py-2.5 text-foreground text-sm leading-normal",
           bubbleClasses,
         )}
       >
         {children}
       </div>
       {meta ? (
-        <span className="text-xs text-subtle-foreground">{meta}</span>
+        <span className="text-subtle-foreground text-xs">{meta}</span>
       ) : null}
     </div>
   );
@@ -56,7 +57,7 @@ export function TranscriptList({
   return (
     <div
       className={cn(
-        "flex flex-col rounded-md gap-4 bg-background border border-border p-4",
+        "flex flex-col gap-4 rounded-md border border-border bg-background p-4",
         className,
       )}
       {...rest}
@@ -89,7 +90,7 @@ export function TranscriptRow({
     >
       <div
         className={cn(
-          "max-w-[70%] rounded-lg py-2.5 px-3 text-sm text-foreground leading-normal",
+          "max-w-[70%] rounded-lg px-3 py-2.5 text-foreground text-sm leading-normal",
           speaker === "agent" ? "bg-subtle" : "bg-info-soft",
         )}
       >

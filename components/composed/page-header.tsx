@@ -17,16 +17,16 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        "flex items-center w-full h-14 px-4 gap-4 bg-background border-b border-border",
+        "flex h-14 w-full items-center gap-4 border-border border-b bg-background px-4",
         className,
       )}
       {...rest}
     >
-      <h1 className="flex-1 min-w-0 text-base font-medium text-foreground truncate">
+      <h1 className="min-w-0 flex-1 truncate font-medium text-base text-foreground">
         {title}
       </h1>
       {actions ? (
-        <div className="flex items-center gap-2 shrink-0">{actions}</div>
+        <div className="flex shrink-0 items-center gap-2">{actions}</div>
       ) : null}
     </div>
   );

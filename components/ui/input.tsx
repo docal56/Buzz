@@ -36,12 +36,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-md px-3 gap-2 bg-background border transition-colors",
+        "inline-flex items-center gap-2 rounded-md border bg-background px-3 transition-colors",
         sizeClasses[size],
         invalid
           ? "border-danger focus-within:border-danger focus-within:ring-[3px] focus-within:ring-danger-soft"
           : "border-border-strong focus-within:border-info focus-within:ring-[3px] focus-within:ring-info-soft",
-        disabled && "bg-muted border-border cursor-not-allowed",
+        disabled && "cursor-not-allowed border-border bg-muted",
         wrapperClassName,
       )}
     >
@@ -57,15 +57,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         </span>
       ) : null}
       <input
-        ref={ref}
-        disabled={disabled}
         aria-invalid={invalid || undefined}
         className={cn(
-          "flex-1 min-w-0 bg-transparent text-sm text-foreground outline-none",
+          "min-w-0 flex-1 bg-transparent text-foreground text-sm outline-none",
           "placeholder:text-subtle-foreground",
-          "disabled:text-disabled disabled:cursor-not-allowed",
+          "disabled:cursor-not-allowed disabled:text-disabled",
           className,
         )}
+        disabled={disabled}
+        ref={ref}
         {...rest}
       />
       {trailingIcon ? (

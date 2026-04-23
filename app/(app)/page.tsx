@@ -1,21 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { SearchInput } from "@/components/composed/search-input";
-import { PageHeader } from "@/components/composed/page-header";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/composed/accordion";
-import { IssueListRow } from "@/components/features/issue-list-row";
+import { PageHeader } from "@/components/composed/page-header";
+import { SearchInput } from "@/components/composed/search-input";
 import {
-  IssueDetailPanel,
   type IssueDetail,
+  IssueDetailPanel,
   type IssueStatus,
 } from "@/components/features/issue-detail-panel";
+import { IssueListRow } from "@/components/features/issue-list-row";
+import { Badge } from "@/components/ui/badge";
 
 interface Issue {
   id: string;
@@ -36,9 +36,18 @@ const description =
   "The user contacted Relocate Property Management to report a boiler issue. The agent acknowledged the problem, but the user interrupted. The agent then attempted to gather the user's details to proceed.";
 
 const transcript: IssueDetail["transcript"] = [
-  { speaker: "agent", text: "Hi, Relocate Property management how can I help you?" },
-  { speaker: "caller", text: "Oh, hi. Yeah, I'd like to report, um, a rat in my kitchen." },
-  { speaker: "agent", text: "Right, okay. That sounds unpleasant. Can I get your name please?" },
+  {
+    speaker: "agent",
+    text: "Hi, Relocate Property management how can I help you?",
+  },
+  {
+    speaker: "caller",
+    text: "Oh, hi. Yeah, I'd like to report, um, a rat in my kitchen.",
+  },
+  {
+    speaker: "agent",
+    text: "Right, okay. That sounds unpleasant. Can I get your name please?",
+  },
   { speaker: "caller", text: "Yeah, my name's Davo Callaghan." },
   {
     speaker: "agent",
@@ -85,18 +94,55 @@ const groups: IssueGroup[] = [
     status: "in-progress",
     label: "In Progress",
     issues: [
-      { id: "ip-1", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", detail: detail("ip-1", "in-progress") },
-      { id: "ip-2", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", detail: detail("ip-2", "in-progress") },
-      { id: "ip-3", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", emergency: true, detail: detail("ip-3", "in-progress") },
-      { id: "ip-4", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", detail: detail("ip-4", "in-progress") },
+      {
+        id: "ip-1",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        detail: detail("ip-1", "in-progress"),
+      },
+      {
+        id: "ip-2",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        detail: detail("ip-2", "in-progress"),
+      },
+      {
+        id: "ip-3",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        emergency: true,
+        detail: detail("ip-3", "in-progress"),
+      },
+      {
+        id: "ip-4",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        detail: detail("ip-4", "in-progress"),
+      },
     ],
   },
   {
     status: "contractor-scheduled",
     label: "Contractor Scheduled",
     issues: [
-      { id: "cs-1", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", detail: detail("cs-1", "contractor-scheduled") },
-      { id: "cs-2", address: "59 Wakefield Road HX3 8AQ", description, timestamp: "10:30am", detail: detail("cs-2", "contractor-scheduled") },
+      {
+        id: "cs-1",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        detail: detail("cs-1", "contractor-scheduled"),
+      },
+      {
+        id: "cs-2",
+        address: "59 Wakefield Road HX3 8AQ",
+        description,
+        timestamp: "10:30am",
+        detail: detail("cs-2", "contractor-scheduled"),
+      },
     ],
   },
   { status: "awaiting-follow-up", label: "Awaiting Follow up", issues: [] },
@@ -141,33 +187,30 @@ export default function OpenIssuesPage() {
   return (
     <>
       <PageHeader
+        actions={<SearchInput placeholder="Search" wrapperClassName="w-53" />}
         title="Open Issues"
-        actions={<SearchInput wrapperClassName="w-53" placeholder="Search" />}
       />
       <div className="flex flex-1 justify-center overflow-y-auto px-4 py-4">
         <div className="flex w-full max-w-content flex-col gap-4">
           <Accordion
-            type="multiple"
-            defaultValue={["new", "in-progress", "contractor-scheduled"]}
             className="flex flex-col gap-4"
+            defaultValue={["new", "in-progress", "contractor-scheduled"]}
+            type="multiple"
           >
             {groups.map((group) => (
               <AccordionItem
+                className="rounded-lg border-border-strong"
                 key={group.status}
                 value={group.status}
-                className="rounded-lg border-border-strong"
               >
-                <AccordionTrigger className="bg-subtle px-5 py-2.5 h-auto data-[state=open]:border-border-strong">
+                <AccordionTrigger className="h-auto bg-subtle px-5 py-2.5 data-[state=open]:border-border-strong">
                   {group.label}
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-col gap-1 px-2 py-2">
                     {group.issues.map((issue) => (
                       <IssueListRow
-                        key={issue.id}
                         address={issue.address}
-                        description={issue.description}
-                        timestamp={issue.timestamp}
                         badge={
                           issue.emergency ? (
                             <Badge tone="danger" variant="solid">
@@ -175,17 +218,20 @@ export default function OpenIssuesPage() {
                             </Badge>
                           ) : null
                         }
-                        selected={selectedId === issue.id}
                         checked={checked.has(issue.id)}
+                        className={
+                          selectedId === issue.id
+                            ? "cursor-pointer rounded-md bg-info-soft/30 shadow-sm"
+                            : "cursor-pointer rounded-md border-b-0"
+                        }
+                        description={issue.description}
+                        key={issue.id}
                         onCheckedChange={(isChecked) =>
                           toggleChecked(issue.id, isChecked)
                         }
                         onClick={() => openIssue(issue.id)}
-                        className={
-                          selectedId === issue.id
-                            ? "rounded-md bg-info-soft/30 shadow-sm cursor-pointer"
-                            : "rounded-md border-b-0 cursor-pointer"
-                        }
+                        selected={selectedId === issue.id}
+                        timestamp={issue.timestamp}
                       />
                     ))}
                   </div>
@@ -197,13 +243,13 @@ export default function OpenIssuesPage() {
       </div>
 
       <IssueDetailPanel
+        hasNext={currentIndex >= 0 && currentIndex < flatIssues.length - 1}
+        hasPrevious={currentIndex > 0}
         issue={selectedIssue?.detail ?? null}
-        open={panelOpen}
+        onNext={goNext}
         onOpenChange={setPanelOpen}
         onPrevious={goPrev}
-        onNext={goNext}
-        hasPrevious={currentIndex > 0}
-        hasNext={currentIndex >= 0 && currentIndex < flatIssues.length - 1}
+        open={panelOpen}
       />
     </>
   );

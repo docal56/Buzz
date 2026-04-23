@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  type ButtonHTMLAttributes,
   cloneElement,
   forwardRef,
   isValidElement,
-  type ButtonHTMLAttributes,
   type ReactNode,
 } from "react";
 import { cn } from "@/lib/utils";
@@ -48,13 +48,13 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
     ref,
   ) {
     const baseClasses = cn(
-      "inline-flex items-center w-full h-10 rounded-md p-2 gap-2 text-sm font-medium transition-colors select-none",
-      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+      "inline-flex h-10 w-full select-none items-center gap-2 rounded-md p-2 font-medium text-sm transition-colors",
+      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
       active
-        ? "bg-background border border-border shadow-sm text-foreground"
+        ? "border border-border bg-background text-foreground shadow-sm"
         : disabled
-          ? "text-disabled cursor-not-allowed"
-          : "text-foreground hover:bg-subtle cursor-pointer",
+          ? "cursor-not-allowed text-disabled"
+          : "cursor-pointer text-foreground hover:bg-subtle",
       className,
     );
 
@@ -63,12 +63,12 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         {icon ? (
           <span
             aria-hidden
-            className="inline-flex items-center justify-center shrink-0 size-6 [&>svg]:size-5"
+            className="inline-flex size-6 shrink-0 items-center justify-center [&>svg]:size-5"
           >
             {icon}
           </span>
         ) : null}
-        <span className="flex-1 min-w-0 text-left truncate">{label}</span>
+        <span className="min-w-0 flex-1 truncate text-left">{label}</span>
       </>
     );
 
@@ -88,13 +88,13 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
 
     return (
       <button
-        ref={ref}
-        type={type}
-        disabled={disabled}
-        data-active={active || undefined}
         aria-current={active ? "page" : undefined}
         aria-disabled={disabled || undefined}
         className={baseClasses}
+        data-active={active || undefined}
+        disabled={disabled}
+        ref={ref}
+        type={type}
         {...rest}
       >
         {content}

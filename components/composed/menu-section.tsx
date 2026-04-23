@@ -16,7 +16,7 @@ export function MenuSection({
   return (
     <div className={cn("flex flex-col", className)} {...rest}>
       {label ? (
-        <div className="px-2 py-2 text-sm font-medium text-subtle-foreground">
+        <div className="px-2 py-2 font-medium text-sm text-subtle-foreground">
           {label}
         </div>
       ) : null}

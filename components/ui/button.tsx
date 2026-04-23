@@ -24,9 +24,9 @@ const variantStyles: Record<ButtonVariant, string> = {
     "disabled:bg-disabled disabled:text-inverse-foreground",
   ),
   secondary: cn(
-    "bg-background text-foreground border border-border-strong",
+    "border border-border-strong bg-background text-foreground",
     "hover:bg-subtle",
-    "disabled:bg-muted disabled:text-disabled disabled:border-border",
+    "disabled:border-border disabled:bg-muted disabled:text-disabled",
   ),
   ghost: cn(
     "bg-transparent text-foreground",
@@ -47,15 +47,15 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-md font-medium leading-snug shrink-0 select-none transition-colors",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        "inline-flex shrink-0 select-none items-center justify-center rounded-md font-medium leading-snug transition-colors",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
         "disabled:cursor-not-allowed",
         sizeStyles[size],
         variantStyles[variant],
         className,
       )}
+      type={type}
       {...rest}
     >
       {leadingIcon ? (

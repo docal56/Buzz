@@ -21,7 +21,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center w-full max-w-120 mx-auto rounded-md py-12 px-8 gap-4 bg-background border border-dashed border-border",
+        "mx-auto flex w-full max-w-120 flex-col items-center gap-4 rounded-md border border-border border-dashed bg-background px-8 py-12",
         className,
       )}
       {...rest}
@@ -29,17 +29,17 @@ export function EmptyState({
       {icon ? (
         <div
           aria-hidden
-          className="inline-flex items-center justify-center shrink-0 rounded-full bg-subtle size-12 text-muted-foreground [&>svg]:size-6"
+          className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-subtle text-muted-foreground [&>svg]:size-6"
         >
           {icon}
         </div>
       ) : null}
       <div className="flex flex-col items-center gap-1">
-        <div className="text-center text-base font-medium text-foreground">
+        <div className="text-center font-medium text-base text-foreground">
           {title}
         </div>
         {description ? (
-          <p className="text-center text-sm text-muted-foreground leading-normal">
+          <p className="text-center text-muted-foreground text-sm leading-normal">
             {description}
           </p>
         ) : null}

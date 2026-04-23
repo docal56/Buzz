@@ -1,8 +1,8 @@
 import type { HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { IconButton } from "@/components/ui/icon-button";
 import { IconSettings } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface SidebarHeaderProps extends HTMLAttributes<HTMLDivElement> {
   name?: string;
@@ -26,25 +26,25 @@ export function SidebarHeader({
   return (
     <div
       className={cn(
-        "flex items-center w-full h-10 gap-2 p-2 shrink-0",
+        "flex h-10 w-full shrink-0 items-center gap-2 p-2",
         className,
       )}
       {...rest}
     >
       <Avatar
-        size="sm"
         initials={initials}
+        size="sm"
         style={{ backgroundColor: avatarBackground, color: avatarColor }}
       />
-      <span className="flex-1 min-w-0 truncate text-sm font-medium text-foreground">
+      <span className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
         {name}
       </span>
       <IconButton
-        variant="ghost"
-        icon={<IconSettings />}
         aria-label="Workspace settings"
-        onClick={onSettingsClick}
         className="size-6 rounded-sm"
+        icon={<IconSettings />}
+        onClick={onSettingsClick}
+        variant="ghost"
       />
     </div>
   );

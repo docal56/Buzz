@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { SidebarHeader } from "@/components/features/sidebar-header";
 import { MenuItem } from "@/components/composed/menu-item";
 import { MenuSection } from "@/components/composed/menu-section";
+import { SidebarHeader } from "@/components/features/sidebar-header";
 import { IconCallIncoming, IconInbox } from "@/components/ui/icons";
 
 const navItems = [
@@ -18,15 +18,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh bg-muted">
-      <aside className="flex w-60 shrink-0 flex-col gap-3 border-r border-border bg-background p-2">
+      <aside className="flex w-60 shrink-0 flex-col gap-3 border-border border-r bg-background p-2">
         <SidebarHeader />
         <MenuSection>
           {navItems.map((item) => (
             <MenuItem
-              key={item.href}
-              asChild
               active={pathname === item.href}
+              asChild
               icon={item.icon}
+              key={item.href}
               label={item.label}
             >
               <Link href={item.href} />
@@ -34,7 +34,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           ))}
         </MenuSection>
       </aside>
-      <div className="flex flex-1 min-w-0 flex-col">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
     </div>
   );
 }

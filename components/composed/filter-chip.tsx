@@ -1,6 +1,6 @@
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
 import { IconChevronDown } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface FilterChipProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
@@ -19,19 +19,19 @@ export const FilterChip = forwardRef<HTMLButtonElement, FilterChipProps>(
   ) {
     return (
       <button
-        ref={ref}
-        type={type}
         aria-pressed={active}
         className={cn(
-          "inline-flex items-center h-8 rounded-md pl-0.5 pr-1.5 bg-background border text-sm text-foreground transition-colors",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-          "disabled:bg-muted disabled:border-border disabled:text-disabled disabled:cursor-not-allowed",
+          "inline-flex h-8 items-center rounded-md border bg-background pr-1.5 pl-0.5 text-foreground text-sm transition-colors",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
+          "disabled:cursor-not-allowed disabled:border-border disabled:bg-muted disabled:text-disabled",
           active ? "border-info" : "border-border-strong hover:bg-subtle",
           className,
         )}
+        ref={ref}
+        type={type}
         {...rest}
       >
-        <span className="inline-flex items-center px-1 gap-2">
+        <span className="inline-flex items-center gap-2 px-1">
           {icon ? (
             <span aria-hidden className="inline-flex shrink-0 [&>svg]:size-4">
               {icon}
@@ -42,13 +42,13 @@ export const FilterChip = forwardRef<HTMLButtonElement, FilterChipProps>(
         <span
           aria-hidden
           className={cn(
-            "self-center w-px h-5 mx-0.5 shrink-0",
+            "mx-0.5 h-5 w-px shrink-0 self-center",
             active ? "bg-border-strong" : "bg-border",
           )}
         />
         <span
           aria-hidden
-          className="inline-flex items-center justify-center w-5 h-8 shrink-0 [&>svg]:size-4 text-foreground"
+          className="inline-flex h-8 w-5 shrink-0 items-center justify-center text-foreground [&>svg]:size-4"
         >
           <IconChevronDown />
         </span>

@@ -18,6 +18,14 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "warn",
+        "useSemanticElements": "warn",
+        "useValidAnchor": "warn",
+        "useFocusableInteractive": "warn",
+        "useAriaPropsForRole": "warn",
+        "noStaticElementInteractions": "warn"
+      },
       "nursery": {
         "useSortedClasses": {
           "level": "warn",

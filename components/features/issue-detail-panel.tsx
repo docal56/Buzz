@@ -1,17 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { IconButton } from "@/components/ui/icon-button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { type ReactNode, useState } from "react";
 import { AudioPlayer } from "@/components/composed/audio-player";
 import {
   ButtonGroup,
@@ -30,6 +19,9 @@ import {
   TranscriptList,
   TranscriptRow,
 } from "@/components/features/transcript";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { IconButton } from "@/components/ui/icon-button";
 import {
   IconArrowDown,
   IconArrowUp,
@@ -37,6 +29,14 @@ import {
   IconCopy,
   IconUploadMedia,
 } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type IssueStatus =
   | "new"
@@ -92,36 +92,36 @@ export function IssueDetailPanel({
   if (!issue) return null;
 
   return (
-    <SidePanel open={open} onOpenChange={onOpenChange}>
+    <SidePanel onOpenChange={onOpenChange} open={open}>
       <SidePanelContent width="720px">
         <SidePanelHeader
-          title={issue.address}
-          showCloseButton={false}
           controls={
             <>
               <ButtonGroup>
                 <ButtonGroupItem
                   aria-label="Previous issue"
+                  disabled={!hasPrevious}
                   icon={<IconArrowUp />}
                   onClick={onPrevious}
-                  disabled={!hasPrevious}
                 />
                 <ButtonGroupItem
                   aria-label="Next issue"
+                  disabled={!hasNext}
                   icon={<IconArrowDown />}
                   onClick={onNext}
-                  disabled={!hasNext}
                 />
               </ButtonGroup>
               <SidePanelClose asChild>
                 <IconButton
-                  variant="secondary"
                   aria-label="Close panel"
                   icon={<IconClose />}
+                  variant="secondary"
                 />
               </SidePanelClose>
             </>
           }
+          showCloseButton={false}
+          title={issue.address}
         />
         <SidePanelBody>
           <div className="grid grid-cols-2 gap-4">
@@ -141,9 +141,9 @@ export function IssueDetailPanel({
             </FormField>
             <FormField label="Contractor for the job">
               <Input
-                size="md"
-                placeholder="Add a contractor name"
                 defaultValue={issue.contractor}
+                placeholder="Add a contractor name"
+                size="md"
               />
             </FormField>
           </div>
@@ -158,9 +158,9 @@ export function IssueDetailPanel({
               </div>
               <div className="flex items-center justify-between">
                 <Button
-                  variant="secondary"
                   size="md"
                   trailingIcon={<IconUploadMedia />}
+                  variant="secondary"
                 >
                   Upload Media
                 </Button>
@@ -173,18 +173,19 @@ export function IssueDetailPanel({
 
           <SectionBlock title="Call recording">
             <AudioPlayer
-              playing={playing}
+              className="px-0"
               currentTime={playing ? "0:42" : "0:00"}
               duration={issue.audio.durationLabel}
-              progress={playing ? 0.5 : 0}
               onPlayPauseClick={() => setPlaying((p) => !p)}
-              className="px-0"
+              playing={playing}
+              progress={playing ? 0.5 : 0}
             />
           </SectionBlock>
 
           <SectionBlock title="Transcript">
             <TranscriptList className="border-0 p-0">
               {issue.transcript.map((row, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: mock transcript has no stable id; real data will use Convex _id
                 <TranscriptRow key={i} speaker={row.speaker}>
                   {row.text}
                 </TranscriptRow>

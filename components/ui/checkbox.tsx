@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
 import { IconCheck } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface CheckboxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
@@ -25,20 +25,20 @@ export function Checkbox({
       htmlFor={id}
     >
       <input
-        type="checkbox"
-        id={id}
-        disabled={disabled}
         className="peer sr-only"
+        disabled={disabled}
+        id={id}
+        type="checkbox"
         {...rest}
       />
       <span
         aria-hidden="true"
         className={cn(
-          "inline-flex items-center justify-center size-4.5 shrink-0 rounded-sm border bg-background border-border-strong text-inverse-foreground",
-          "peer-hover:bg-subtle peer-hover:border-muted-foreground",
-          "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring",
-          "peer-checked:bg-info peer-checked:border-info peer-checked:hover:bg-info peer-checked:hover:border-info",
-          "peer-disabled:bg-subtle peer-disabled:border-border",
+          "inline-flex size-4.5 shrink-0 items-center justify-center rounded-sm border border-border-strong bg-background text-inverse-foreground",
+          "peer-hover:border-muted-foreground peer-hover:bg-subtle",
+          "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ring peer-focus-visible:outline-offset-2",
+          "peer-checked:border-info peer-checked:bg-info peer-checked:hover:border-info peer-checked:hover:bg-info",
+          "peer-disabled:border-border peer-disabled:bg-subtle",
           "[&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100",
         )}
       >

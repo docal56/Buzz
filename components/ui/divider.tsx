@@ -14,13 +14,13 @@ export function Divider({
 }: DividerProps) {
   return (
     <div
-      role="separator"
       aria-orientation={orientation}
       className={cn(
         "shrink-0 bg-border",
-        orientation === "horizontal" ? "h-px w-full" : "w-px h-full",
+        orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
         className,
       )}
+      role="separator"
       {...rest}
     />
   );

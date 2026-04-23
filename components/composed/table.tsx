@@ -11,10 +11,10 @@ export const Table = forwardRef<
   HTMLAttributes<HTMLTableElement>
 >(function Table({ className, ...rest }, ref) {
   return (
-    <div className="rounded-md overflow-hidden bg-background border border-border">
+    <div className="overflow-hidden rounded-md border border-border bg-background">
       <table
-        ref={ref}
         className={cn("w-full border-collapse text-sm", className)}
+        ref={ref}
         {...rest}
       />
     </div>
@@ -27,8 +27,8 @@ export const TableHeader = forwardRef<
 >(function TableHeader({ className, ...rest }, ref) {
   return (
     <thead
+      className={cn("border-border border-b bg-muted", className)}
       ref={ref}
-      className={cn("bg-muted border-b border-border", className)}
       {...rest}
     />
   );
@@ -38,7 +38,7 @@ export const TableBody = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(function TableBody({ className, ...rest }, ref) {
-  return <tbody ref={ref} className={className} {...rest} />;
+  return <tbody className={className} ref={ref} {...rest} />;
 });
 
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
@@ -50,12 +50,12 @@ export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
   function TableRow({ className, interactive = true, ...rest }, ref) {
     return (
       <tr
-        ref={ref}
         className={cn(
-          "border-b border-subtle last:border-b-0 transition-colors",
+          "border-subtle border-b transition-colors last:border-b-0",
           interactive && "hover:bg-muted",
           className,
         )}
+        ref={ref}
         {...rest}
       />
     );
@@ -68,12 +68,12 @@ export const TableHead = forwardRef<
 >(function TableHead({ className, ...rest }, ref) {
   return (
     <th
-      ref={ref}
-      scope="col"
       className={cn(
-        "h-10 px-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground align-middle",
+        "h-10 px-4 text-left align-middle font-medium text-muted-foreground text-xs uppercase tracking-wider",
         className,
       )}
+      ref={ref}
+      scope="col"
       {...rest}
     />
   );
@@ -85,8 +85,11 @@ export const TableCell = forwardRef<
 >(function TableCell({ className, ...rest }, ref) {
   return (
     <td
+      className={cn(
+        "h-12 px-4 align-middle text-foreground text-sm",
+        className,
+      )}
       ref={ref}
-      className={cn("h-12 px-4 text-sm text-foreground align-middle", className)}
       {...rest}
     />
   );

@@ -196,9 +196,9 @@ export function IconCheck({
       <path
         d="M7.75 13.0577L10.3971 15.75L17.75 8.75"
         stroke="currentColor"
-        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeWidth={strokeWidth}
       />
     </svg>
   );
@@ -435,8 +435,8 @@ export function IconNote(props: IconProps) {
 export function IconPause(props: IconProps) {
   return (
     <svg {...baseProps} fill="currentColor" {...props}>
-      <rect x="6.5" y="4.75" width="3.5" height="14.5" rx="1" />
-      <rect x="14" y="4.75" width="3.5" height="14.5" rx="1" />
+      <rect height="14.5" rx="1" width="3.5" x="6.5" y="4.75" />
+      <rect height="14.5" rx="1" width="3.5" x="14" y="4.75" />
     </svg>
   );
 }

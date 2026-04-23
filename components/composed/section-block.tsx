@@ -17,16 +17,13 @@ export function SectionBlock({
   ...rest
 }: SectionBlockProps) {
   return (
-    <section
-      className={cn("flex flex-col gap-3", className)}
-      {...rest}
-    >
+    <section className={cn("flex flex-col gap-3", className)} {...rest}>
       <div className="flex items-center gap-2">
-        <h2 className="flex-1 min-w-0 text-sm font-medium text-foreground">
+        <h2 className="min-w-0 flex-1 font-medium text-foreground text-sm">
           {title}
         </h2>
         {action ? (
-          <div className="shrink-0 text-sm font-medium text-info">{action}</div>
+          <div className="shrink-0 font-medium text-info text-sm">{action}</div>
         ) : null}
       </div>
       {children}

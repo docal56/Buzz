@@ -1,15 +1,15 @@
 "use client";
 
+import { Dialog as RadixDialog } from "radix-ui";
 import {
-  forwardRef,
   type ComponentPropsWithoutRef,
   type ElementRef,
+  forwardRef,
   type ReactNode,
 } from "react";
-import { Dialog as RadixDialog } from "radix-ui";
-import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/ui/icon-button";
 import { IconClose } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export const SidePanel = RadixDialog.Root;
 export const SidePanelTrigger = RadixDialog.Trigger;
@@ -32,17 +32,17 @@ export const SidePanelContent = forwardRef<
 ) {
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay className="fixed inset-0 z-40 bg-inverse/40 data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out" />
+      <RadixDialog.Overlay className="fixed inset-0 z-40 bg-inverse/40 data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
       <RadixDialog.Content
-        ref={ref}
         aria-describedby={undefined}
-        style={{ width, ...style }}
         className={cn(
-          "fixed right-0 top-0 z-50 h-dvh flex flex-col bg-background border-l border-border shadow-sm rounded-l-md overflow-hidden outline-none",
+          "fixed top-0 right-0 z-50 flex h-dvh flex-col overflow-hidden rounded-l-md border-border border-l bg-background shadow-sm outline-none",
           "data-[state=open]:animate-slide-in-right",
           "data-[state=closed]:animate-slide-out-right",
           className,
         )}
+        ref={ref}
+        style={{ width, ...style }}
         {...rest}
       >
         {children}
@@ -70,23 +70,23 @@ export function SidePanelHeader({
   return (
     <div
       className={cn(
-        "flex items-center h-14 px-4 gap-4 border-b border-border shrink-0",
+        "flex h-14 shrink-0 items-center gap-4 border-border border-b px-4",
         className,
       )}
       {...rest}
     >
-      <SidePanelTitle className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+      <SidePanelTitle className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
         {title}
       </SidePanelTitle>
       {controls ? (
-        <div className="flex items-center gap-2 shrink-0">{controls}</div>
+        <div className="flex shrink-0 items-center gap-2">{controls}</div>
       ) : null}
       {showCloseButton ? (
         <SidePanelClose asChild>
           <IconButton
-            variant="secondary"
             aria-label="Close panel"
             icon={<IconClose />}
+            variant="secondary"
           />
         </SidePanelClose>
       ) : null}
@@ -100,7 +100,7 @@ export function SidePanelBody({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex flex-col flex-1 gap-4 p-4 overflow-auto", className)}
+      className={cn("flex flex-1 flex-col gap-4 overflow-auto p-4", className)}
       {...rest}
     />
   );

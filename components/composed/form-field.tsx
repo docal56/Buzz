@@ -1,11 +1,11 @@
 import {
   Children,
   cloneElement,
-  isValidElement,
-  useId,
   type HTMLAttributes,
+  isValidElement,
   type ReactElement,
   type ReactNode,
+  useId,
 } from "react";
 import { cn } from "@/lib/utils";
 
@@ -50,23 +50,23 @@ export function FormField({
   return (
     <div className={cn("flex flex-col gap-2", className)} {...rest}>
       <label
+        className="font-medium text-foreground text-sm"
         htmlFor={controlId}
-        className="text-sm font-medium text-foreground"
       >
         {label}
         {required ? (
-          <span aria-hidden className="text-danger ml-0.5">
+          <span aria-hidden className="ml-0.5 text-danger">
             *
           </span>
         ) : null}
       </label>
       {enhanced}
       {error ? (
-        <p id={helperId} className="text-xs text-danger-foreground">
+        <p className="text-danger-foreground text-xs" id={helperId}>
           {error}
         </p>
       ) : helper ? (
-        <p id={helperId} className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs" id={helperId}>
           {helper}
         </p>
       ) : null}

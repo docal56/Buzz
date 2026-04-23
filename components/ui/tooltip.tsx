@@ -1,12 +1,12 @@
 "use client";
 
+import { Tooltip as RadixTooltip } from "radix-ui";
 import {
-  forwardRef,
   type ComponentPropsWithoutRef,
   type ElementRef,
+  forwardRef,
   type ReactNode,
 } from "react";
-import { Tooltip as RadixTooltip } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 export const TooltipProvider = RadixTooltip.Provider;
@@ -23,13 +23,13 @@ export const TooltipContent = forwardRef<
   return (
     <RadixTooltip.Portal>
       <RadixTooltip.Content
-        ref={ref}
-        sideOffset={sideOffset}
         className={cn(
-          "z-50 inline-flex items-center rounded-md py-1.5 px-2 gap-2 bg-inverse text-inverse-foreground text-xs",
-          "data-[state=delayed-open]:animate-fade-in data-[state=closed]:animate-fade-out",
+          "z-50 inline-flex items-center gap-2 rounded-md bg-inverse px-2 py-1.5 text-inverse-foreground text-xs",
+          "data-[state=closed]:animate-fade-out data-[state=delayed-open]:animate-fade-in",
           className,
         )}
+        ref={ref}
+        sideOffset={sideOffset}
         {...rest}
       >
         {children}
@@ -38,7 +38,8 @@ export const TooltipContent = forwardRef<
   );
 });
 
-export interface TooltipShortcutProps extends React.HTMLAttributes<HTMLElement> {
+export interface TooltipShortcutProps
+  extends React.HTMLAttributes<HTMLElement> {
   children: ReactNode;
 }
 
@@ -51,7 +52,7 @@ export function TooltipShortcut({
   return (
     <kbd
       className={cn(
-        "inline-flex items-center rounded-sm py-px px-1.5 bg-inverse/60 text-border-strong text-xs font-normal",
+        "inline-flex items-center rounded-sm bg-inverse/60 px-1.5 py-px font-normal text-border-strong text-xs",
         className,
       )}
       {...rest}

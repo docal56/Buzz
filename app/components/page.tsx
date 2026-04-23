@@ -1,47 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Divider } from "@/components/ui/divider";
-import { IconButton } from "@/components/ui/icon-button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
-import {
-  ButtonGroup,
-  ButtonGroupItem,
-} from "@/components/composed/button-group";
-import { SearchInput } from "@/components/composed/search-input";
-import { FormField } from "@/components/composed/form-field";
-import { FilterChip } from "@/components/composed/filter-chip";
-import { MenuItem } from "@/components/composed/menu-item";
-import { MenuSection } from "@/components/composed/menu-section";
-import {
-  MetricCard,
-  MetricCardGroup,
-} from "@/components/composed/metric-card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/composed/table";
 import {
   Accordion,
   AccordionContent,
@@ -49,7 +8,18 @@ import {
   AccordionTrigger,
 } from "@/components/composed/accordion";
 import { AudioPlayer } from "@/components/composed/audio-player";
+import {
+  ButtonGroup,
+  ButtonGroupItem,
+} from "@/components/composed/button-group";
+import { EmptyState } from "@/components/composed/empty-state";
+import { FilterChip } from "@/components/composed/filter-chip";
+import { FormField } from "@/components/composed/form-field";
+import { MenuItem } from "@/components/composed/menu-item";
+import { MenuSection } from "@/components/composed/menu-section";
+import { MetricCard, MetricCardGroup } from "@/components/composed/metric-card";
 import { PageHeader } from "@/components/composed/page-header";
+import { SearchInput } from "@/components/composed/search-input";
 import { SectionBlock } from "@/components/composed/section-block";
 import {
   SidePanel,
@@ -58,15 +28,29 @@ import {
   SidePanelHeader,
   SidePanelTrigger,
 } from "@/components/composed/side-panel";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/composed/table";
 import { Toast } from "@/components/composed/toast";
-import { EmptyState } from "@/components/composed/empty-state";
-import { SidebarHeader } from "@/components/features/sidebar-header";
 import { IssueListRow } from "@/components/features/issue-list-row";
+import { SidebarHeader } from "@/components/features/sidebar-header";
 import {
   TranscriptBubble,
   TranscriptList,
   TranscriptRow,
 } from "@/components/features/transcript";
+import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Divider } from "@/components/ui/divider";
+import { IconButton } from "@/components/ui/icon-button";
 import {
   IconAddImage,
   IconArchive,
@@ -90,6 +74,16 @@ import {
   IconSettings,
   IconUploadMedia,
 } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
 
 function Section({
   id,
@@ -102,10 +96,10 @@ function Section({
 }) {
   return (
     <section
+      className="flex scroll-mt-6 flex-col gap-6 border-border border-t pt-8"
       id={id}
-      className="flex flex-col gap-6 scroll-mt-6 border-t border-border pt-8"
     >
-      <h2 className="text-2xl font-medium leading-tight text-foreground">
+      <h2 className="font-medium text-2xl text-foreground leading-tight">
         {title}
       </h2>
       {children}
@@ -122,7 +116,7 @@ function Example({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="text-sm font-medium text-muted-foreground">{label}</div>
+      <div className="font-medium text-muted-foreground text-sm">{label}</div>
       <div className="flex flex-wrap items-start gap-4">{children}</div>
     </div>
   );
@@ -136,14 +130,14 @@ export default function ComponentsPreviewPage() {
 
   return (
     <TooltipProvider>
-      <main className="min-h-dvh bg-muted px-8 pb-24 pt-12 text-foreground">
+      <main className="min-h-dvh bg-muted px-8 pt-12 pb-24 text-foreground">
         <div className="mx-auto flex max-w-[1280px] flex-col gap-10">
           <header className="flex flex-col gap-2">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-muted-foreground text-sm">
               Design System · Reloc8 Properties
             </div>
-            <h1 className="text-2xl font-medium leading-tight">Components</h1>
-            <p className="max-w-prose text-sm text-muted-foreground leading-normal">
+            <h1 className="font-medium text-2xl leading-tight">Components</h1>
+            <p className="max-w-prose text-muted-foreground text-sm leading-normal">
               Runtime preview of every component in the library. Mirrors the
               Paper Components page.
             </p>
@@ -151,11 +145,11 @@ export default function ComponentsPreviewPage() {
 
           <Section id="atoms" title="01 · Atoms">
             <Example label="Avatar">
-              <Avatar size="sm" initials="DO" />
-              <Avatar size="md" initials="DO" />
+              <Avatar initials="DO" size="sm" />
+              <Avatar initials="DO" size="md" />
               <Avatar
-                size="md"
                 initials="R8"
+                size="md"
                 style={{ backgroundColor: "#3dd8cf", color: "#1f1f1f" }}
               />
             </Example>
@@ -182,26 +176,26 @@ export default function ComponentsPreviewPage() {
             <Example label="Checkbox">
               <Checkbox
                 checked={checkedOne}
-                onChange={(e) => setCheckedOne(e.currentTarget.checked)}
                 label="Interactive"
+                onChange={(e) => setCheckedOne(e.currentTarget.checked)}
               />
               <Checkbox
                 checked={checkedTwo}
-                onChange={(e) => setCheckedTwo(e.currentTarget.checked)}
                 label="Checked"
+                onChange={(e) => setCheckedTwo(e.currentTarget.checked)}
               />
               <Checkbox disabled label="Disabled" />
             </Example>
             <Example label="Divider">
               <div className="flex w-60 flex-col gap-2">
                 <Divider />
-                <span className="text-xs text-subtle-foreground">
+                <span className="text-subtle-foreground text-xs">
                   Horizontal
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2">
-                <Divider orientation="vertical" className="h-8" />
-                <span className="text-xs text-subtle-foreground">Vertical</span>
+                <Divider className="h-8" orientation="vertical" />
+                <span className="text-subtle-foreground text-xs">Vertical</span>
               </div>
             </Example>
           </Section>
@@ -219,19 +213,19 @@ export default function ComponentsPreviewPage() {
             </Example>
             <Example label="Secondary">
               <Button variant="secondary">Upload media</Button>
-              <Button variant="secondary" className="bg-subtle">
+              <Button className="bg-subtle" variant="secondary">
                 Hover
               </Button>
-              <Button variant="secondary" disabled>
+              <Button disabled variant="secondary">
                 Disabled
               </Button>
             </Example>
             <Example label="Ghost">
               <Button variant="ghost">Cancel</Button>
-              <Button variant="ghost" className="bg-subtle">
+              <Button className="bg-subtle" variant="ghost">
                 Hover
               </Button>
-              <Button variant="ghost" disabled>
+              <Button disabled variant="ghost">
                 Disabled
               </Button>
             </Example>
@@ -239,21 +233,21 @@ export default function ComponentsPreviewPage() {
               <IconButton aria-label="Close" icon={<IconClose />} />
               <IconButton
                 aria-label="Close"
-                icon={<IconClose />}
                 className="bg-subtle"
-              />
-              <IconButton
-                variant="ghost"
-                aria-label="Close"
                 icon={<IconClose />}
               />
               <IconButton
-                variant="ghost"
                 aria-label="Close"
                 icon={<IconClose />}
-                className="bg-subtle"
+                variant="ghost"
               />
-              <IconButton aria-label="Close" icon={<IconClose />} disabled />
+              <IconButton
+                aria-label="Close"
+                className="bg-subtle"
+                icon={<IconClose />}
+                variant="ghost"
+              />
+              <IconButton aria-label="Close" disabled icon={<IconClose />} />
             </Example>
             <Example label="Button Group">
               <ButtonGroup>
@@ -266,30 +260,30 @@ export default function ComponentsPreviewPage() {
           <Section id="inputs" title="03 · Inputs & Form Controls">
             <Example label="Text Input">
               <Input
-                wrapperClassName="w-60"
                 placeholder="Add a contractor name"
+                wrapperClassName="w-60"
               />
               <Input
-                wrapperClassName="w-60"
                 defaultValue="John Mason Plumbing"
+                wrapperClassName="w-60"
               />
               <Input
-                wrapperClassName="w-60"
                 defaultValue="not-an-email"
                 invalid
+                wrapperClassName="w-60"
               />
               <Input
-                wrapperClassName="w-60"
                 defaultValue="Locked field"
                 disabled
+                wrapperClassName="w-60"
               />
             </Example>
             <Example label="Search Input">
-              <SearchInput wrapperClassName="w-53" placeholder="Search" />
+              <SearchInput placeholder="Search" wrapperClassName="w-53" />
               <SearchInput
-                wrapperClassName="w-53"
                 defaultValue="Wakefield"
                 trailingSlot={<IconClose />}
+                wrapperClassName="w-53"
               />
             </Example>
             <Example label="Select">
@@ -309,7 +303,7 @@ export default function ComponentsPreviewPage() {
               </Select>
             </Example>
             <Example label="Form Field">
-              <FormField label="Status" className="w-83">
+              <FormField className="w-83" label="Status">
                 <Select>
                   <SelectTrigger>
                     <SelectValue placeholder="New Issue" />
@@ -321,23 +315,23 @@ export default function ComponentsPreviewPage() {
                 </Select>
               </FormField>
               <FormField
-                label="Assigned to"
-                helper="Optional — leave blank if no contractor is scheduled yet."
                 className="w-83"
+                helper="Optional — leave blank if no contractor is scheduled yet."
+                label="Assigned to"
               >
                 <Input placeholder="Add a contractor name" />
               </FormField>
               <FormField
-                label="Contact number"
-                error="Enter a complete UK phone number."
                 className="w-83"
+                error="Enter a complete UK phone number."
+                label="Contact number"
               >
                 <Input defaultValue="07729" />
               </FormField>
             </Example>
             <Example label="Filter Chip">
               <FilterChip icon={<IconCalendar />} label="This week" />
-              <FilterChip icon={<IconCalendar />} label="This week" active />
+              <FilterChip active icon={<IconCalendar />} label="This week" />
             </Example>
           </Section>
 
@@ -351,38 +345,38 @@ export default function ComponentsPreviewPage() {
               <div className="flex w-56 flex-col gap-2">
                 <MenuItem icon={<IconInbox />} label="Open Issues" />
                 <MenuItem icon={<IconCallIncoming />} label="Call Logs" />
-                <MenuItem icon={<IconInbox />} label="Open Issues" active />
-                <MenuItem icon={<IconArchive />} label="Properties" disabled />
+                <MenuItem active icon={<IconInbox />} label="Open Issues" />
+                <MenuItem disabled icon={<IconArchive />} label="Properties" />
               </div>
             </Example>
             <Example label="Menu Section">
               <div className="w-56 rounded-md border border-border bg-background p-2">
                 <MenuSection label="Calls">
-                  <MenuItem icon={<IconInbox />} label="Open Issues" active />
+                  <MenuItem active icon={<IconInbox />} label="Open Issues" />
                   <MenuItem icon={<IconCallIncoming />} label="Call Logs" />
                 </MenuSection>
               </div>
             </Example>
             <Example label="Tabs — text">
-              <Tabs defaultValue="overview" className="w-90">
+              <Tabs className="w-90" defaultValue="overview">
                 <TabsList>
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="notes">Notes</TabsTrigger>
                   <TabsTrigger value="history">History</TabsTrigger>
                 </TabsList>
-                <TabsContent value="overview" className="pt-3 text-sm">
+                <TabsContent className="pt-3 text-sm" value="overview">
                   Overview content
                 </TabsContent>
-                <TabsContent value="notes" className="pt-3 text-sm">
+                <TabsContent className="pt-3 text-sm" value="notes">
                   Notes content
                 </TabsContent>
-                <TabsContent value="history" className="pt-3 text-sm">
+                <TabsContent className="pt-3 text-sm" value="history">
                   History content
                 </TabsContent>
               </Tabs>
             </Example>
             <Example label="Tabs — with icon">
-              <Tabs defaultValue="list" className="w-90">
+              <Tabs className="w-90" defaultValue="list">
                 <TabsList>
                   <TabsTrigger value="list">
                     <IconInbox />
@@ -451,13 +445,10 @@ export default function ComponentsPreviewPage() {
               </Table>
             </Example>
             <Example label="List Row (Issue)">
-              <div className="w-full max-w-[1168px] rounded-md border border-border bg-background overflow-hidden">
+              <div className="w-full max-w-[1168px] overflow-hidden rounded-md border border-border bg-background">
                 {[0, 1, 2].map((i) => (
                   <IssueListRow
-                    key={i}
                     address={`59 Wakefield Road HX${i + 3} 8AQ`}
-                    description="The user contacted Reloc8 Property Management to report a boiler issue. The agent acknowledged the problem…"
-                    timestamp="10:30am"
                     badge={
                       i === 1 ? (
                         <Badge tone="danger" variant="solid">
@@ -465,17 +456,20 @@ export default function ComponentsPreviewPage() {
                         </Badge>
                       ) : null
                     }
-                    selected={selectedIssue === i}
+                    description="The user contacted Reloc8 Property Management to report a boiler issue. The agent acknowledged the problem…"
+                    key={i}
                     onClick={() => setSelectedIssue(i)}
+                    selected={selectedIssue === i}
+                    timestamp="10:30am"
                   />
                 ))}
               </div>
             </Example>
             <Example label="Accordion">
               <Accordion
-                type="multiple"
-                defaultValue={["new"]}
                 className="flex w-full max-w-[1168px] flex-col gap-3"
+                defaultValue={["new"]}
+                type="multiple"
               >
                 <AccordionItem value="new">
                   <AccordionTrigger count={2}>New Issue</AccordionTrigger>
@@ -497,7 +491,7 @@ export default function ComponentsPreviewPage() {
                     Awaiting Follow up
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="px-4 py-6 text-sm text-muted-foreground">
+                    <div className="px-4 py-6 text-muted-foreground text-sm">
                       Empty example body.
                     </div>
                   </AccordionContent>
@@ -507,20 +501,20 @@ export default function ComponentsPreviewPage() {
             <Example label="Audio Player">
               <div className="w-172">
                 <AudioPlayer
-                  playing={playing}
                   currentTime={playing ? "0:42" : "0:00"}
                   duration="1:24"
-                  progress={playing ? 0.5 : 0}
                   onPlayPauseClick={() => setPlaying((p) => !p)}
+                  playing={playing}
+                  progress={playing ? 0.5 : 0}
                 />
               </div>
             </Example>
             <Example label="Transcript">
               <div className="flex items-start gap-8">
-                <TranscriptBubble speaker="agent" meta="Agent · 0:00">
+                <TranscriptBubble meta="Agent · 0:00" speaker="agent">
                   Hi, Reloc8 Property Management how can I help you?
                 </TranscriptBubble>
-                <TranscriptBubble speaker="caller" meta="Caller · 0:06">
+                <TranscriptBubble meta="Caller · 0:06" speaker="caller">
                   Oh, hi. Yeah, I&rsquo;d like to report a leak in my kitchen.
                 </TranscriptBubble>
               </div>
@@ -544,22 +538,21 @@ export default function ComponentsPreviewPage() {
 
           <Section id="layout" title="06 · Layout & Feedback">
             <Example label="Card">
-              <Card variant="bordered" className="flex w-80 flex-col gap-3">
-                <div className="text-sm text-muted-foreground">Bordered</div>
+              <Card className="flex w-80 flex-col gap-3" variant="bordered">
+                <div className="text-muted-foreground text-sm">Bordered</div>
                 <div className="text-base text-foreground leading-normal">
                   Default variant. Use for surfaces that sit on a muted
                   background.
                 </div>
               </Card>
-              <Card variant="elevated" className="flex w-80 flex-col gap-3">
-                <div className="text-sm text-muted-foreground">Elevated</div>
+              <Card className="flex w-80 flex-col gap-3" variant="elevated">
+                <div className="text-muted-foreground text-sm">Elevated</div>
                 <div className="text-base text-foreground leading-normal">
-                  Shadow variant. Use for overlays, popovers, active menu
-                  items.
+                  Shadow variant. Use for overlays, popovers, active menu items.
                 </div>
               </Card>
-              <Card variant="flat" className="flex w-80 flex-col gap-3">
-                <div className="text-sm text-muted-foreground">Flat</div>
+              <Card className="flex w-80 flex-col gap-3" variant="flat">
+                <div className="text-muted-foreground text-sm">Flat</div>
                 <div className="text-base text-foreground leading-normal">
                   Muted background, no border. Use for grouping inside another
                   surface.
@@ -567,38 +560,37 @@ export default function ComponentsPreviewPage() {
               </Card>
             </Example>
             <Example label="Page Header">
-              <div className="w-full max-w-[1200px] rounded-md border border-border bg-background overflow-hidden">
+              <div className="w-full max-w-[1200px] overflow-hidden rounded-md border border-border bg-background">
                 <PageHeader
-                  title="Open Issues"
                   actions={
-                    <SearchInput wrapperClassName="w-53" placeholder="Search" />
+                    <SearchInput placeholder="Search" wrapperClassName="w-53" />
                   }
+                  title="Open Issues"
                 />
               </div>
-              <div className="w-full max-w-[1200px] rounded-md border border-border bg-background overflow-hidden">
+              <div className="w-full max-w-[1200px] overflow-hidden rounded-md border border-border bg-background">
                 <PageHeader
-                  title="Call Logs · Overview"
                   actions={
                     <>
                       <SearchInput
-                        wrapperClassName="w-53"
                         placeholder="Search"
+                        wrapperClassName="w-53"
                       />
                       <FilterChip icon={<IconCalendar />} label="This week" />
                     </>
                   }
+                  title="Call Logs · Overview"
                 />
               </div>
             </Example>
             <Example label="Section Block">
               <SectionBlock
-                title="Details"
                 action={
-                  <a href="#" className="hover:underline">
+                  <a className="hover:underline" href="#">
                     Edit
                   </a>
                 }
-                className="w-172"
+                title="Details"
               >
                 <Card>
                   <div className="flex flex-col gap-2 text-base text-foreground">
@@ -616,7 +608,6 @@ export default function ComponentsPreviewPage() {
                 </SidePanelTrigger>
                 <SidePanelContent width="720px">
                   <SidePanelHeader
-                    title="59 Wakefield Road HX4 8AQ"
                     controls={
                       <ButtonGroup>
                         <ButtonGroupItem
@@ -629,6 +620,7 @@ export default function ComponentsPreviewPage() {
                         />
                       </ButtonGroup>
                     }
+                    title="59 Wakefield Road HX4 8AQ"
                   />
                   <SidePanelBody>
                     <p className="text-sm text-subtle-foreground">
@@ -639,7 +631,10 @@ export default function ComponentsPreviewPage() {
               </SidePanel>
             </Example>
             <Example label="Toast">
-              <Toast icon={<IconCheck strokeWidth={2.5} />} onDismiss={() => {}}>
+              <Toast
+                icon={<IconCheck strokeWidth={2.5} />}
+                onDismiss={() => {}}
+              >
                 Details copied to clipboard.
               </Toast>
               <Toast
@@ -659,10 +654,10 @@ export default function ComponentsPreviewPage() {
             </Example>
             <Example label="Empty State">
               <EmptyState
+                action={<Button variant="secondary">Go to Open Issues</Button>}
+                description="Issues that need another call or a check-in will appear here."
                 icon={<IconInbox />}
                 title="No follow-ups waiting"
-                description="Issues that need another call or a check-in will appear here."
-                action={<Button variant="secondary">Go to Open Issues</Button>}
               />
             </Example>
           </Section>
@@ -697,11 +692,11 @@ export default function ComponentsPreviewPage() {
                 }>;
                 return (
                   <div
-                    key={name as string}
                     className="flex flex-col items-center gap-2 rounded-md border border-border bg-background p-3"
+                    key={name as string}
                   >
                     <IconComp className="size-5 text-foreground" />
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {name as string}
                     </span>
                   </div>
@@ -714,4 +709,3 @@ export default function ComponentsPreviewPage() {
     </TooltipProvider>
   );
 }
-

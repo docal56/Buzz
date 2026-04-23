@@ -6,9 +6,9 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IconEndArrowClose } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export interface IssueListRowProps extends HTMLAttributes<HTMLDivElement> {
   address: string;
@@ -53,49 +53,49 @@ export const IssueListRow = forwardRef<HTMLDivElement, IssueListRowProps>(
 
     return (
       <div
-        ref={ref}
-        role="button"
-        tabIndex={0}
+        className={cn(
+          "flex h-10 cursor-pointer items-center gap-4 p-2 transition-colors",
+          "border-subtle border-b last:border-b-0",
+          "hover:bg-muted",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]",
+          selected &&
+            "border-info bg-background ring-1 ring-info ring-inset hover:bg-background",
+          className,
+        )}
         data-selected={selected || undefined}
         onClick={onClick}
         onKeyDown={handleKeyDown}
-        className={cn(
-          "flex items-center h-10 p-2 gap-4 transition-colors cursor-pointer",
-          "border-b border-subtle last:border-b-0",
-          "hover:bg-muted",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring",
-          selected &&
-            "bg-background border-info ring-1 ring-inset ring-info hover:bg-background",
-          className,
-        )}
+        ref={ref}
+        role="button"
+        tabIndex={0}
         {...rest}
       >
         <div
-          className="inline-flex items-center justify-center shrink-0"
+          className="inline-flex shrink-0 items-center justify-center"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
           <Checkbox
+            aria-label={`Select issue at ${address}`}
             checked={checked}
             onChange={(e) => onCheckedChange?.(e.currentTarget.checked)}
-            aria-label={`Select issue at ${address}`}
           />
         </div>
-        <span className="w-70 shrink-0 text-sm font-medium text-foreground truncate">
+        <span className="w-70 shrink-0 truncate font-medium text-foreground text-sm">
           {address}
         </span>
-        <span className="flex-1 min-w-0 text-sm text-muted-foreground truncate">
+        <span className="min-w-0 flex-1 truncate text-muted-foreground text-sm">
           {description}
         </span>
-        <div className="w-21 flex justify-end shrink-0">{badge}</div>
+        <div className="flex w-21 shrink-0 justify-end">{badge}</div>
         <span className="w-14 shrink-0 text-right text-sm text-subtle-foreground">
           {timestamp}
         </span>
         <span
           aria-hidden
-          className="inline-flex items-center justify-center shrink-0 size-5 [&>svg]:size-4 text-foreground"
+          className="inline-flex size-5 shrink-0 items-center justify-center text-foreground [&>svg]:size-4"
         >
-          {showArrow ?? selected ? <IconEndArrowClose /> : null}
+          {(showArrow ?? selected) ? <IconEndArrowClose /> : null}
         </span>
       </div>
     );

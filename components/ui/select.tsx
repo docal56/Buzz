@@ -1,14 +1,14 @@
 "use client";
 
+import { Select as RadixSelect } from "radix-ui";
 import {
-  forwardRef,
   type ComponentPropsWithoutRef,
   type ElementRef,
+  forwardRef,
   type ReactNode,
 } from "react";
-import { Select as RadixSelect } from "radix-ui";
+import { IconCheck, IconChevronDown } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
-import { IconChevronDown, IconCheck } from "@/components/ui/icons";
 
 export const Select = RadixSelect.Root;
 export const SelectGroup = RadixSelect.Group;
@@ -37,21 +37,21 @@ export const SelectTrigger = forwardRef<
 ) {
   return (
     <RadixSelect.Trigger
-      ref={ref}
       className={cn(
-        "inline-flex items-center justify-between w-full rounded-md px-3 gap-2 bg-background border text-sm text-foreground transition-colors",
+        "inline-flex w-full items-center justify-between gap-2 rounded-md border bg-background px-3 text-foreground text-sm transition-colors",
         triggerSizeClasses[size],
         invalid
           ? "border-danger focus:border-danger focus:ring-[3px] focus:ring-danger-soft"
           : "border-border-strong focus:border-info focus:ring-[3px] focus:ring-info-soft",
         "data-[placeholder]:text-subtle-foreground",
-        "disabled:bg-muted disabled:border-border disabled:text-disabled disabled:cursor-not-allowed",
+        "disabled:cursor-not-allowed disabled:border-border disabled:bg-muted disabled:text-disabled",
         "outline-none",
         className,
       )}
+      ref={ref}
       {...rest}
     >
-      <span className="flex-1 min-w-0 text-left truncate">{children}</span>
+      <span className="min-w-0 flex-1 truncate text-left">{children}</span>
       <RadixSelect.Icon asChild>
         <IconChevronDown
           aria-hidden
@@ -72,13 +72,13 @@ export const SelectContent = forwardRef<
   return (
     <RadixSelect.Portal>
       <RadixSelect.Content
-        ref={ref}
-        position={position}
-        sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-background shadow-sm p-1",
+          "z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-background p-1 shadow-sm",
           className,
         )}
+        position={position}
+        ref={ref}
+        sideOffset={sideOffset}
         {...rest}
       >
         <RadixSelect.Viewport>{children}</RadixSelect.Viewport>
@@ -98,23 +98,23 @@ export const SelectItem = forwardRef<
 >(function SelectItem({ className, children, ...rest }, ref) {
   return (
     <RadixSelect.Item
-      ref={ref}
       className={cn(
-        "relative flex items-center h-8 rounded-sm px-2 gap-2 text-sm text-foreground cursor-pointer select-none outline-none",
+        "relative flex h-8 cursor-pointer select-none items-center gap-2 rounded-sm px-2 text-foreground text-sm outline-none",
         "data-[highlighted]:bg-subtle",
         "data-[state=checked]:bg-subtle",
-        "data-[disabled]:text-disabled data-[disabled]:cursor-not-allowed",
+        "data-[disabled]:cursor-not-allowed data-[disabled]:text-disabled",
         className,
       )}
+      ref={ref}
       {...rest}
     >
-      <span className="inline-flex items-center justify-center shrink-0 size-4">
+      <span className="inline-flex size-4 shrink-0 items-center justify-center">
         <RadixSelect.ItemIndicator>
           <IconCheck className="size-4 text-foreground" strokeWidth={2} />
         </RadixSelect.ItemIndicator>
       </span>
       <RadixSelect.ItemText asChild>
-        <span className="flex-1 min-w-0 truncate">{children}</span>
+        <span className="min-w-0 flex-1 truncate">{children}</span>
       </RadixSelect.ItemText>
     </RadixSelect.Item>
   );

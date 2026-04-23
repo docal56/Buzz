@@ -13,18 +13,10 @@ const variantStyles: Record<CardVariant, string> = {
   flat: "bg-subtle",
 };
 
-export function Card({
-  variant = "bordered",
-  className,
-  ...rest
-}: CardProps) {
+export function Card({ variant = "bordered", className, ...rest }: CardProps) {
   return (
     <div
-      className={cn(
-        "rounded-md p-4",
-        variantStyles[variant],
-        className,
-      )}
+      className={cn("rounded-md p-4", variantStyles[variant], className)}
       {...rest}
     />
   );

@@ -11,7 +11,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 
 const toneStyles: Record<BadgeVariant, Record<BadgeTone, string>> = {
   soft: {
-    success: "bg-success-soft text-success-foreground border-success-foreground",
+    success:
+      "bg-success-soft text-success-foreground border-success-foreground",
     danger: "bg-danger-soft text-danger-foreground border-danger-foreground",
     info: "bg-info-soft text-info-foreground border-info-foreground",
     neutral: "bg-subtle text-muted-foreground border-border-strong",
@@ -34,7 +35,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium leading-snug",
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 font-medium text-xs leading-snug",
         toneStyles[variant][tone],
         className,
       )}
