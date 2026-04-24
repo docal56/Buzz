@@ -4,6 +4,7 @@ import type { NextConfig } from "next";
 import "./src/env";
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   turbopack: {
     root: __dirname,
   },

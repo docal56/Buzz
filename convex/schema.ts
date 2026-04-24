@@ -23,7 +23,7 @@ export default defineSchema({
     .index("by_clerk_id", ["clerkId"])
     .index("by_slug", ["slug"]),
 
-  orgMembers: defineTable({
+  memberships: defineTable({
     userId: v.id("users"),
     orgId: v.id("orgs"),
     role: v.string(),

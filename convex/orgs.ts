@@ -1,20 +1,41 @@
 import { v } from "convex/values";
-import type { Doc } from "./_generated/dataModel";
+import { internalMutation, type MutationCtx, query } from "./_generated/server";
 import {
-  internalMutation,
-  type MutationCtx,
-  type QueryCtx,
-} from "./_generated/server";
+  findMembership,
+  findOrgByClerkId,
+  findUserByClerkId,
+  readOrgContext,
+  requireUserAndOrg,
+} from "./lib/auth";
 
-async function findByClerkId(
-  ctx: QueryCtx,
-  clerkId: string,
-): Promise<Doc<"orgs"> | null> {
-  return await ctx.db
-    .query("orgs")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
-    .unique();
-}
+export const getCurrent = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+    const orgCtx = readOrgContext(identity);
+    if (!orgCtx) return null;
+    return await findOrgByClerkId(ctx, orgCtx.id);
+  },
+});
+
+export const getMyRole = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+    const orgCtx = readOrgContext(identity);
+    return orgCtx?.rol ?? null;
+  },
+});
+
+export const getCurrentMembership = query({
+  args: {},
+  handler: async (ctx) => {
+    const { user, org } = await requireUserAndOrg(ctx);
+    return await findMembership(ctx, user._id, org._id);
+  },
+});
 
 export const upsertFromClerk = internalMutation({
   args: {
@@ -24,7 +45,7 @@ export const upsertFromClerk = internalMutation({
     imageUrl: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
-    const existing = await findByClerkId(ctx, args.clerkId);
+    const existing = await findOrgByClerkId(ctx, args.clerkId);
     if (existing) {
       await ctx.db.patch(existing._id, { ...args, softDeleted: false });
       return existing._id;
@@ -36,7 +57,7 @@ export const upsertFromClerk = internalMutation({
 export const softDeleteFromClerk = internalMutation({
   args: { clerkId: v.string() },
   handler: async (ctx, { clerkId }) => {
-    const existing = await findByClerkId(ctx, clerkId);
+    const existing = await findOrgByClerkId(ctx, clerkId);
     if (!existing) return;
     await ctx.db.patch(existing._id, { softDeleted: true });
   },
@@ -47,22 +68,10 @@ async function resolveMembership(
   clerkUserId: string,
   clerkOrgId: string,
 ) {
-  const user = await ctx.db
-    .query("users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
-    .unique();
-  const org = await ctx.db
-    .query("orgs")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkOrgId))
-    .unique();
+  const user = await findUserByClerkId(ctx, clerkUserId);
+  const org = await findOrgByClerkId(ctx, clerkOrgId);
   if (!user || !org) return null;
-
-  const membership = await ctx.db
-    .query("orgMembers")
-    .withIndex("by_user_and_org", (q) =>
-      q.eq("userId", user._id).eq("orgId", org._id),
-    )
-    .unique();
+  const membership = await findMembership(ctx, user._id, org._id);
   return { user, org, membership };
 }
 
@@ -86,7 +95,7 @@ export const upsertMembershipFromClerk = internalMutation({
         await ctx.db.patch(membership._id, { role });
       return membership._id;
     }
-    return await ctx.db.insert("orgMembers", {
+    return await ctx.db.insert("memberships", {
       userId: user._id,
       orgId: org._id,
       role,

@@ -10,6 +10,7 @@
 
 import type * as clerk_webhook from "../clerk/webhook.js";
 import type * as http from "../http.js";
+import type * as lib_auth from "../lib/auth.js";
 import type * as orgs from "../orgs.js";
 import type * as users from "../users.js";
 
@@ -22,6 +23,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   "clerk/webhook": typeof clerk_webhook;
   http: typeof http;
+  "lib/auth": typeof lib_auth;
   orgs: typeof orgs;
   users: typeof users;
 }>;
