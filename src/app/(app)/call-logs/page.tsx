@@ -1,184 +1,140 @@
 "use client";
 
-import { FilterChip } from "@/components/composed/filter-chip";
-import { MetricCard, MetricCardGroup } from "@/components/composed/metric-card";
-import { SearchInput } from "@/components/composed/search-input";
-import { SectionBlock } from "@/components/composed/section-block";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { type Call, calls, getCallById } from "@/app/(app)/_mock-data";
+import { PageContent } from "@/components/patterns/app-shell";
+import { CallDetailSidePanel } from "@/components/patterns/call-detail-side-panel";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/composed/table";
-import { Badge, type BadgeTone } from "@/components/ui/badge";
-import { IconCalendar } from "@/components/ui/icons";
+  DataTable,
+  type DataTableColumn,
+} from "@/components/patterns/data-table";
+import { PageHeaderList } from "@/components/patterns/page-header-list";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { DropdownOption } from "@/components/ui/dropdown-option";
+import { DropdownTrigger } from "@/components/ui/dropdown-trigger";
+import { Icon } from "@/components/ui/icon";
+import { LabelSmall } from "@/components/ui/label-small";
 
-type CallStatus = "success" | "failed";
-
-interface CallLog {
-  id: string;
-  date: string;
-  agent: string;
-  duration: string;
-  status: CallStatus;
-}
-
-const logs: CallLog[] = [
+const columns: DataTableColumn<Call>[] = [
+  { id: "date", header: "Date", cell: (row) => row.date, className: "flex-1" },
   {
-    id: "1",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
+    id: "agent",
+    header: "Agent",
+    cell: (row) => row.agent,
+    className: "flex-1",
   },
   {
-    id: "2",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
+    id: "duration",
+    header: "Duration",
+    cell: (row) => row.duration,
+    className: "flex-1",
   },
   {
-    id: "3",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
+    id: "address",
+    header: "Address",
+    cell: (row) => row.address,
+    className: "flex-1",
   },
   {
-    id: "4",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "5",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "6",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "7",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "8",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "9",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "failed",
-  },
-  {
-    id: "10",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "11",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "12",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
-  },
-  {
-    id: "13",
-    date: "Apr 18, 2026, 11:31 AM",
-    agent: "Property Management",
-    duration: "1:59",
-    status: "success",
+    id: "status",
+    header: "Pass / Fail",
+    className: "w-status-column",
+    cell: (row) =>
+      row.status === "pass" ? (
+        <LabelSmall variant="success">Pass</LabelSmall>
+      ) : (
+        <LabelSmall variant="destructive">Failed</LabelSmall>
+      ),
   },
 ];
 
-const statusTone: Record<CallStatus, BadgeTone> = {
-  success: "success",
-  failed: "danger",
-};
-
-const statusLabel: Record<CallStatus, string> = {
-  success: "Success",
-  failed: "Failed",
-};
-
 export default function CallLogsPage() {
-  return (
-    <div className="flex flex-1 justify-center overflow-y-auto px-4 py-4">
-      <div className="flex w-full max-w-content flex-col gap-6">
-        <SectionBlock
-          action={
-            <div className="flex items-center gap-2">
-              <SearchInput placeholder="Search" wrapperClassName="w-53" />
-              <FilterChip icon={<IconCalendar />} label="This week" />
-            </div>
-          }
-          title={<span className="text-lg">Overview</span>}
-        >
-          <MetricCardGroup>
-            <MetricCard label="Calls" value={24} />
-            <MetricCard label="Issues Recorded" value={23} />
-            <MetricCard label="Open Issues" value={4} />
-            <MetricCard label="Pass Rate" value="96%" />
-          </MetricCardGroup>
-        </SectionBlock>
+  const router = useRouter();
+  const [selectedCallId, setSelectedCallId] = useState<string | undefined>(
+    undefined,
+  );
+  const [query, setQuery] = useState("");
 
-        <SectionBlock title={<span className="text-base">Logs</span>}>
-          <Table>
-            <TableHeader>
-              <TableRow interactive={false}>
-                <TableHead className="w-[280px]">Date</TableHead>
-                <TableHead className="w-[320px]">Agent</TableHead>
-                <TableHead className="w-[280px]">Duration</TableHead>
-                <TableHead>Call Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {logs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell>{log.date}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {log.agent}
-                  </TableCell>
-                  <TableCell>{log.duration}</TableCell>
-                  <TableCell>
-                    <Badge tone={statusTone[log.status]}>
-                      {statusLabel[log.status]}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </SectionBlock>
+  const filteredCalls = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return calls;
+    return calls.filter(
+      (c) =>
+        c.address.toLowerCase().includes(q) ||
+        c.agent.toLowerCase().includes(q) ||
+        c.date.toLowerCase().includes(q),
+    );
+  }, [query]);
+
+  const selectedCall = selectedCallId ? getCallById(selectedCallId) : undefined;
+
+  return (
+    <PageContent
+      header={
+        <PageHeaderList
+          onSearchChange={setQuery}
+          searchPlaceholder="Search calls"
+          searchValue={query}
+          title="Call Logs"
+          titleIcon={<Icon name="call-incoming" size="md" />}
+        />
+      }
+    >
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <DataTable
+          columns={columns}
+          countLabel={(c) => `${c} Calls`}
+          filters={
+            <>
+              <DropdownMenu
+                trigger={
+                  <DropdownTrigger
+                    leadingIcon={<Icon name="filter" size="sm" />}
+                  >
+                    Filter
+                  </DropdownTrigger>
+                }
+              >
+                <DropdownOption>Pass</DropdownOption>
+                <DropdownOption>Failed</DropdownOption>
+              </DropdownMenu>
+              <DropdownMenu
+                trigger={
+                  <DropdownTrigger
+                    leadingIcon={<Icon name="calendar" size="sm" />}
+                  >
+                    All time
+                  </DropdownTrigger>
+                }
+              >
+                <DropdownOption selected>All time</DropdownOption>
+                <DropdownOption>This week</DropdownOption>
+                <DropdownOption>Today</DropdownOption>
+              </DropdownMenu>
+            </>
+          }
+          getRowId={(row) => row.id}
+          onRowClick={(row) =>
+            setSelectedCallId((curr) => (curr === row.id ? undefined : row.id))
+          }
+          rowCount={filteredCalls.length}
+          rows={filteredCalls}
+          selectedRowId={selectedCallId}
+        />
       </div>
-    </div>
+      <CallDetailSidePanel
+        onClose={() => setSelectedCallId(undefined)}
+        onViewIssue={
+          selectedCall?.issueId
+            ? () => router.push(`/open-issues/${selectedCall.issueId}`)
+            : undefined
+        }
+        open={Boolean(selectedCall)}
+        summary={selectedCall?.summary}
+        title={selectedCall?.address ?? ""}
+        transcript={selectedCall?.transcript}
+      />
+    </PageContent>
   );
 }

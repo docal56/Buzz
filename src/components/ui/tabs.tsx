@@ -1,46 +1,71 @@
 "use client";
 
 import { Tabs as RadixTabs } from "radix-ui";
-import {
-  type ComponentPropsWithoutRef,
-  type ElementRef,
-  forwardRef,
-} from "react";
+import type { ComponentProps, Ref } from "react";
 import { cn } from "@/lib/utils";
 
-export const Tabs = RadixTabs.Root;
-export const TabsContent = RadixTabs.Content;
+type TabsProps = ComponentProps<typeof RadixTabs.Root>;
 
-export const TabsList = forwardRef<
-  ElementRef<typeof RadixTabs.List>,
-  ComponentPropsWithoutRef<typeof RadixTabs.List>
->(function TabsList({ className, ...rest }, ref) {
+export function Tabs({ className, ...props }: TabsProps) {
   return (
-    <RadixTabs.List
-      className={cn("flex border-border border-b", className)}
-      ref={ref}
-      {...rest}
+    <RadixTabs.Root
+      className={cn("flex flex-col gap-lg", className)}
+      {...props}
     />
   );
-});
+}
 
-export const TabsTrigger = forwardRef<
-  ElementRef<typeof RadixTabs.Trigger>,
-  ComponentPropsWithoutRef<typeof RadixTabs.Trigger>
->(function TabsTrigger({ className, ...rest }, ref) {
+type TabListProps = ComponentProps<typeof RadixTabs.List>;
+
+export function TabList({ className, ...props }: TabListProps) {
+  return (
+    <RadixTabs.List
+      className={cn(
+        "inline-flex items-center border-border border-b",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+type TabProps = Omit<ComponentProps<typeof RadixTabs.Trigger>, "ref"> & {
+  ref?: Ref<HTMLButtonElement>;
+};
+
+export function Tab({ className, ref, ...props }: TabProps) {
   return (
     <RadixTabs.Trigger
       className={cn(
-        "inline-flex items-center justify-center gap-1.5 px-3 py-2 font-medium text-sm outline-none transition-colors",
-        "text-muted-foreground hover:text-foreground",
-        "data-[state=active]:-mb-px data-[state=active]:border-foreground data-[state=active]:border-b-2 data-[state=active]:text-foreground",
-        "focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
-        "disabled:cursor-not-allowed disabled:text-disabled",
-        "[&>svg]:size-4",
+        "group/tab inline-flex flex-col items-center justify-center gap-md px-lg pt-md",
+        "font-medium text-14 text-foreground-muted leading-120",
+        "transition-colors",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "data-[state=active]:text-foreground",
         className,
       )}
       ref={ref}
-      {...rest}
+      {...props}
+    >
+      <span>{props.children}</span>
+      <span
+        aria-hidden="true"
+        className={cn(
+          "-mb-px h-xxs w-full rounded-t-lg bg-foreground",
+          "opacity-0 group-data-[state=active]/tab:opacity-100",
+        )}
+      />
+    </RadixTabs.Trigger>
+  );
+}
+
+type TabPanelProps = ComponentProps<typeof RadixTabs.Content>;
+
+export function TabPanel({ className, ...props }: TabPanelProps) {
+  return (
+    <RadixTabs.Content
+      className={cn("focus-visible:outline-none", className)}
+      {...props}
     />
   );
-});
+}

@@ -1,5 +1,7 @@
 # Design System Reference
 
+> **Superseded:** Use [DESIGN.md](./DESIGN.md) as the canonical source of truth for current design tokens, primitives, patterns, and UI composition. This file is retained only as a legacy token reference.
+
 Source of truth for design tokens in this project. The tokens are defined in Figma (file: Property-Management) and mirrored here so coding agents can wire them into Tailwind without opening Figma.
 
 **Golden rule:** if a value isn't in this file, it isn't in the system. Don't invent new tokens — add them to Figma first, then update this doc.

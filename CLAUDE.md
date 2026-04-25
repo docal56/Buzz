@@ -4,7 +4,7 @@
 
 - **Framework:** Next.js 16 App Router with Turbopack. Middleware file is `src/proxy.ts` (Next 16 rename of `middleware.ts`).
 - **Language:** TypeScript 6 with `@typescript/native-preview`. Typecheck via `pnpm typecheck` (`tsgo --noEmit`).
-- **UI:** React 19, Tailwind v4 (config in `src/app/globals.css` — no `tailwind.config.js`), Radix Primitives (`radix-ui` package).
+- **UI:** React 19, Tailwind v4 (config in `src/app/globals.css` — no `tailwind.config.js`), Radix Primitives (`radix-ui` package), and `@dnd-kit/*` for kanban drag/drop.
 - **Backend:** Convex 1.36. Schema + functions under `convex/`.
 - **Auth:** Clerk 7 issues JWTs consumed by Convex via `ConvexProviderWithClerk`. Clerk → Convex sync via Svix-verified webhook at `convex/clerk/webhook.ts`.
 - **Env vars:** validated through `src/env.ts` (`@t3-oss/env-nextjs` + Zod). Import env via `import { env } from "@/env"` — never `process.env` directly in app code.
@@ -20,10 +20,12 @@
 
 - `src/app/(app)/` — authenticated routes (gated by `src/proxy.ts`).
 - `src/app/(auth)/` — sign-in / sign-up / sign-out.
-- `src/components/ui/` — low-level primitives. `src/components/composed/` — composed patterns. `src/components/features/` — feature-specific UI.
+- `src/components/ui/` — low-level design-system primitives. `src/components/patterns/` — reusable composed patterns such as `AppShell`, `MainNav`, `KanbanBoard`, `DataTable`, panels, timeline, transcript, and page headers.
+- `src/components/icons/` + `src/components/ui/icons-data.ts` — checked-in SVG icon assets and generated icon data consumed through `<Icon name="…" />`.
+- `src/app/components/` — design-system showcase routes served under `/components`; keep demos updated when adding primitives or patterns.
 - `src/server/convex.ts` — singleton `ConvexReactClient` for the browser.
 - `convex/_generated/` is **committed** (so CI type-checks without running `convex dev`). Don't gitignore it.
-- `docs/design-system-reference.md` is the source of truth for tokens + component composition. Consult it before inventing new UI primitives.
+- `docs/DESIGN.md` is the source of truth for tokens + component composition. Consult it before inventing new UI primitives. `docs/design-system-reference.md` is legacy historical context only.
 - `docs/` holds internal long-form documentation (design reference, tutorials). Not shipped — keep agent-facing rules in this file or `AGENTS.md`.
 
 ## Convex

@@ -1,23 +1,32 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export type CardVariant = "bordered" | "elevated" | "flat";
-
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: CardVariant;
-}
-
-const variantStyles: Record<CardVariant, string> = {
-  bordered: "bg-background border border-border",
-  elevated: "bg-background shadow-sm",
-  flat: "bg-subtle",
+type CardProps = HTMLAttributes<HTMLDivElement> & {
+  header?: ReactNode;
 };
 
-export function Card({ variant = "bordered", className, ...rest }: CardProps) {
+export function Card({ header, children, className, ...props }: CardProps) {
   return (
     <div
-      className={cn("rounded-md p-4", variantStyles[variant], className)}
-      {...rest}
-    />
+      className={cn(
+        "flex flex-col gap-base rounded-lg bg-surface p-lg shadow-subtle",
+        "border-[length:var(--border-hairline)] border-border",
+        className,
+      )}
+      {...props}
+    >
+      {header ? (
+        <div className="flex items-center">
+          <span className="font-medium text-16 text-foreground leading-120">
+            {header}
+          </span>
+        </div>
+      ) : null}
+      {children ? (
+        <div className="flex flex-col text-14 text-foreground leading-160">
+          {children}
+        </div>
+      ) : null}
+    </div>
   );
 }

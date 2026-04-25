@@ -1,74 +1,49 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { cn } from "@/lib/utils";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "ref"> & {
   variant?: ButtonVariant;
-  size?: ButtonSize;
-  leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
-}
-
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: "h-7 px-2.5 gap-1.5 text-sm",
-  md: "h-8 px-3 gap-2 text-sm",
-  lg: "h-10 px-4 gap-2 text-sm",
+  ref?: Ref<HTMLButtonElement>;
 };
 
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: cn(
-    "bg-info text-inverse-foreground",
-    "hover:bg-info-foreground",
-    "disabled:bg-disabled disabled:text-inverse-foreground",
-  ),
-  secondary: cn(
-    "border border-border-strong bg-background text-foreground",
-    "hover:bg-subtle",
-    "disabled:border-border disabled:bg-muted disabled:text-disabled",
-  ),
-  ghost: cn(
-    "bg-transparent text-foreground",
-    "hover:bg-subtle",
-    "disabled:bg-transparent disabled:text-disabled",
-  ),
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: "bg-primary text-foreground-inverted hover:bg-primary-hover",
+  secondary:
+    "bg-secondary text-foreground border border-border hover:bg-secondary-hover",
+  ghost: "bg-ghost text-foreground hover:bg-ghost-hover",
+  destructive:
+    "bg-destructive text-foreground-inverted hover:bg-destructive-hover",
 };
 
 export function Button({
   variant = "primary",
-  size = "md",
-  leadingIcon,
   trailingIcon,
-  className,
   children,
+  className,
+  ref,
   type = "button",
-  ...rest
+  ...props
 }: ButtonProps) {
   return (
     <button
       className={cn(
-        "inline-flex shrink-0 select-none items-center justify-center rounded-md font-medium leading-snug transition-colors",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
-        "disabled:cursor-not-allowed",
-        sizeStyles[size],
-        variantStyles[variant],
+        "inline-flex items-center justify-center gap-md rounded-md px-base py-md",
+        "font-medium text-14 leading-120",
+        "transition-colors",
+        "disabled:pointer-events-none disabled:opacity-40",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        variantClasses[variant],
         className,
       )}
+      ref={ref}
       type={type}
-      {...rest}
+      {...props}
     >
-      {leadingIcon ? (
-        <span aria-hidden className="inline-flex shrink-0 [&>svg]:size-4">
-          {leadingIcon}
-        </span>
-      ) : null}
       {children}
-      {trailingIcon ? (
-        <span aria-hidden className="inline-flex shrink-0 [&>svg]:size-4">
-          {trailingIcon}
-        </span>
-      ) : null}
+      {trailingIcon}
     </button>
   );
 }

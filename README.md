@@ -119,7 +119,8 @@ Vitest runs with `jsdom` and `@testing-library/react`. Setup in `vitest.setup.ts
 
 Long-form internal documentation lives in `docs/`:
 
-- [`docs/design-system-reference.md`](docs/design-system-reference.md) — design tokens, typography, spacing, radius. Source of truth for what's in the system.
+- [`docs/DESIGN.md`](docs/DESIGN.md) — canonical design-system guide for tokens, primitives, patterns, and UI composition.
+- [`docs/design-system-reference.md`](docs/design-system-reference.md) — legacy token reference retained for historical context; superseded by `docs/DESIGN.md`.
 - [`docs/first-convex-feature.html`](docs/first-convex-feature.html) — walkthrough / tutorial.
 
 ## Notes

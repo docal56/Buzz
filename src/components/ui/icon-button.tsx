@@ -1,48 +1,45 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { cn } from "@/lib/utils";
 
-export type IconButtonVariant = "secondary" | "ghost";
+export type IconButtonSize = "md" | "sm";
 
-export interface IconButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  variant?: IconButtonVariant;
+type IconButtonProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "ref" | "children"
+> & {
   icon: ReactNode;
-  /** Required — icon-only buttons must have an accessible label. */
+  size?: IconButtonSize;
   "aria-label": string;
-}
+  ref?: Ref<HTMLButtonElement>;
+};
 
-const variantStyles: Record<IconButtonVariant, string> = {
-  secondary: cn(
-    "border border-border-strong bg-background text-foreground",
-    "hover:bg-subtle",
-    "disabled:border-border disabled:bg-muted disabled:text-disabled",
-  ),
-  ghost: cn(
-    "bg-transparent text-foreground",
-    "hover:bg-subtle",
-    "disabled:bg-transparent disabled:text-disabled",
-  ),
+const sizeClasses: Record<IconButtonSize, string> = {
+  md: "p-md",
+  sm: "p-sm",
 };
 
 export function IconButton({
-  variant = "secondary",
   icon,
+  size = "md",
   className,
+  ref,
   type = "button",
-  ...rest
+  ...props
 }: IconButtonProps) {
   return (
     <button
       className={cn(
-        "inline-flex size-8 shrink-0 items-center justify-center rounded-md transition-colors",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
-        "disabled:cursor-not-allowed",
-        "[&>svg]:size-4",
-        variantStyles[variant],
+        "inline-flex items-center justify-center rounded-md",
+        "bg-ghost text-foreground hover:bg-ghost-hover",
+        "transition-colors",
+        "disabled:pointer-events-none disabled:opacity-40",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        sizeClasses[size],
         className,
       )}
+      ref={ref}
       type={type}
-      {...rest}
+      {...props}
     >
       {icon}
     </button>
