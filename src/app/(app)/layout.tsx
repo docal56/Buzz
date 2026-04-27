@@ -1,16 +1,14 @@
 "use client";
 
-import {
-  ClerkLoaded,
-  ClerkLoading,
-  OrganizationSwitcher,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, OrganizationSwitcher } from "@clerk/nextjs";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/patterns/app-shell";
 import { MainNav, type MainNavSection } from "@/components/patterns/main-nav";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
+import { cn } from "@/lib/utils";
 
 const navSections: MainNavSection[] = [
   {
@@ -18,10 +16,10 @@ const navSections: MainNavSection[] = [
     title: "Manage",
     items: [
       {
-        id: "open-issues",
-        label: "Open Issues",
-        href: "/",
-        matchPaths: ["/open-issues"],
+        id: "issues",
+        label: "Issues",
+        href: "/issues",
+        matchPaths: ["/issues"],
         icon: <Icon name="issues" size="md" />,
       },
     ],
@@ -31,9 +29,9 @@ const navSections: MainNavSection[] = [
     title: "Monitor",
     items: [
       {
-        id: "call-logs",
-        label: "Call Logs",
-        href: "/call-logs",
+        id: "calls",
+        label: "Call Monitor",
+        href: "/calls",
         icon: <Icon name="call-incoming" size="md" />,
       },
     ],
@@ -42,19 +40,19 @@ const navSections: MainNavSection[] = [
 
 function OrganizationSlot() {
   return (
-    <div className="min-h-10">
+    <div className="min-w-0 flex-1">
       <ClerkLoading>
         <div className="h-9 w-full animate-pulse rounded-md bg-hover" />
       </ClerkLoading>
       <ClerkLoaded>
         <OrganizationSwitcher
-          afterCreateOrganizationUrl="/"
-          afterSelectOrganizationUrl="/"
+          afterCreateOrganizationUrl="/issues"
+          afterSelectOrganizationUrl="/issues"
           appearance={{
             elements: {
               rootBox: "w-full",
               organizationSwitcherTrigger:
-                "w-full justify-between rounded-md border border-border bg-surface px-md py-md text-14 font-medium leading-120 text-foreground shadow-subtle hover:bg-hover",
+                "w-full justify-between rounded-md px-md py-md text-14 font-medium leading-120 text-foreground hover:bg-hover",
               organizationPreviewTextContainer: "min-w-0",
               organizationPreviewMainIdentifier:
                 "truncate text-14 font-medium leading-120 text-foreground",
@@ -68,28 +66,26 @@ function OrganizationSlot() {
   );
 }
 
-function UserSlot() {
+function SidebarFooter() {
+  const pathname = usePathname() ?? "";
+  const active = pathname === "/settings";
+
   return (
-    <div className="min-h-10 border-border border-t pt-md">
-      <ClerkLoading>
-        <div className="h-9 w-full animate-pulse rounded-md bg-hover" />
-      </ClerkLoading>
-      <ClerkLoaded>
-        <UserButton
-          appearance={{
-            elements: {
-              rootBox: "w-full",
-              userButtonBox:
-                "w-full gap-md rounded-md px-md py-md text-14 font-medium leading-120 text-foreground hover:bg-hover",
-              userButtonTrigger: "order-first rounded-full focus:shadow-none",
-              userButtonOuterIdentifier:
-                "order-last min-w-0 flex-1 truncate pl-0 text-left text-14 font-medium leading-120 text-foreground",
-              avatarBox: "size-7",
-            },
-          }}
-          showName
-        />
-      </ClerkLoaded>
+    <div className="flex items-center gap-md">
+      <OrganizationSlot />
+      <Link
+        aria-label="Settings"
+        className={cn(
+          "inline-flex size-10 shrink-0 items-center justify-center rounded-md",
+          "bg-transparent text-foreground-muted hover:bg-hover hover:text-foreground",
+          "transition-colors",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          active && "text-foreground",
+        )}
+        href="/settings"
+      >
+        <Icon name="settings" size="md" />
+      </Link>
     </div>
   );
 }
@@ -99,9 +95,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <AppShell
       nav={
         <MainNav
-          footer={<UserSlot />}
+          footer={<SidebarFooter />}
           logo={<Logo />}
-          organizationSlot={<OrganizationSlot />}
           sections={navSections}
         />
       }

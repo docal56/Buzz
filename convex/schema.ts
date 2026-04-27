@@ -170,6 +170,7 @@ export default defineSchema({
 
   issues: defineTable({
     orgId: v.id("orgs"),
+    publicId: v.optional(v.string()),
     primaryConversationId: v.id("conversations"),
     status: v.union(
       v.literal("new"),
@@ -193,6 +194,7 @@ export default defineSchema({
   })
     .index("by_org", ["orgId"])
     .index("by_org_and_status", ["orgId", "status"])
+    .index("by_org_and_public_id", ["orgId", "publicId"])
     .index("by_primary_conversation", ["primaryConversationId"]),
 
   issueUpdates: defineTable({

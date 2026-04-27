@@ -15,9 +15,9 @@ export function MainNavDemo() {
             title: "Manage",
             items: [
               {
-                id: "open-issues",
-                label: "Open Issues",
-                href: "/",
+                id: "issues",
+                label: "Issues",
+                href: "/issues",
                 icon: <Icon name="issues" size="md" />,
               },
             ],
@@ -27,9 +27,9 @@ export function MainNavDemo() {
             title: "Monitor",
             items: [
               {
-                id: "call-logs",
-                label: "Call Logs",
-                href: "/call-logs",
+                id: "calls",
+                label: "Call Monitor",
+                href: "/calls",
                 icon: <Icon name="call-incoming" size="md" />,
               },
             ],

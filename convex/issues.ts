@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import type { Doc } from "./_generated/dataModel";
-import { mutation, query } from "./_generated/server";
+import { mutation, type QueryCtx, query } from "./_generated/server";
 import { requireUserAndOrg } from "./lib/auth";
 
 const STATUSES = [
@@ -21,6 +21,22 @@ const statusValidator = v.union(
 
 type Status = (typeof STATUSES)[number];
 
+async function issueWithDetails(ctx: QueryCtx, issue: Doc<"issues">) {
+  const primaryConversation = await ctx.db.get(issue.primaryConversationId);
+  const timeline = await ctx.db
+    .query("issueUpdates")
+    .withIndex("by_issue", (q) => q.eq("issueId", issue._id))
+    .order("asc")
+    .collect();
+  const filteredTimeline = timeline.filter((t) => !t.softDeleted);
+  return {
+    ...issue,
+    publicId: issue.publicId ?? issue._id,
+    primaryConversation,
+    timeline: filteredTimeline,
+  };
+}
+
 export const listByStatus = query({
   args: {},
   handler: async (ctx) => {
@@ -29,7 +45,10 @@ export const listByStatus = query({
       .query("issues")
       .withIndex("by_org", (q) => q.eq("orgId", org._id))
       .collect();
-    const grouped: Record<Status, Doc<"issues">[]> = {
+    const grouped: Record<
+      Status,
+      Array<Doc<"issues"> & { publicId: string }>
+    > = {
       new: [],
       "in-progress": [],
       "contractor-scheduled": [],
@@ -38,7 +57,10 @@ export const listByStatus = query({
     };
     for (const issue of rows) {
       if (issue.softDeleted) continue;
-      grouped[issue.status].push(issue);
+      grouped[issue.status].push({
+        ...issue,
+        publicId: issue.publicId ?? issue._id,
+      });
     }
     return grouped;
   },
@@ -52,18 +74,28 @@ export const get = query({
     if (!issue || issue.orgId !== org._id || issue.softDeleted) {
       throw new Error("Not found");
     }
-    const primaryConversation = await ctx.db.get(issue.primaryConversationId);
-    const timeline = await ctx.db
-      .query("issueUpdates")
-      .withIndex("by_issue", (q) => q.eq("issueId", issue._id))
-      .order("asc")
-      .collect();
-    const filteredTimeline = timeline.filter((t) => !t.softDeleted);
-    return {
-      ...issue,
-      primaryConversation,
-      timeline: filteredTimeline,
-    };
+    return await issueWithDetails(ctx, issue);
+  },
+});
+
+export const getByPublicId = query({
+  args: { publicId: v.string() },
+  handler: async (ctx, args) => {
+    const { org } = await requireUserAndOrg(ctx);
+    let issue = await ctx.db
+      .query("issues")
+      .withIndex("by_org_and_public_id", (q) =>
+        q.eq("orgId", org._id).eq("publicId", args.publicId),
+      )
+      .unique();
+    if (!issue) {
+      const legacyId = ctx.db.normalizeId("issues", args.publicId);
+      issue = legacyId ? await ctx.db.get(legacyId) : null;
+    }
+    if (!issue || issue.orgId !== org._id || issue.softDeleted) {
+      throw new Error("Not found");
+    }
+    return await issueWithDetails(ctx, issue);
   },
 });
 

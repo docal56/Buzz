@@ -38,6 +38,7 @@ export type Contact = {
 
 export type Issue = {
   id: string;
+  publicId: string;
   address: string;
   description: string;
   status: IssueStatus;
@@ -90,7 +91,8 @@ const sharedSummary =
 
 export const issues: Issue[] = [
   {
-    id: "59-wakefield-road",
+    id: "issue-1",
+    publicId: "k7q2m4p8n6x1b4h9",
     address: "59 Wakefield Road, HX3 8AQ",
     description: sharedSummary,
     status: "new",
@@ -125,7 +127,8 @@ export const issues: Issue[] = [
     transcript: sharedTranscript,
   },
   {
-    id: "59-wakefield-road-b",
+    id: "issue-2",
+    publicId: "p8n6x1b4h9t2z2r8",
     address: "59 Wakefield Road, HX3 8AQ",
     description: sharedSummary,
     status: "new",
@@ -151,7 +154,8 @@ export const issues: Issue[] = [
     transcript: sharedTranscript,
   },
   {
-    id: "12-oakdene-rise",
+    id: "issue-3",
+    publicId: "b4h9t2z2r8c5m7q3",
     address: "12 Oakdene Rise, HD1 3QP",
     description: "Heating intermittent — boiler service booked.",
     status: "in-progress",
@@ -194,7 +198,8 @@ export const issues: Issue[] = [
     transcript: sharedTranscript,
   },
   {
-    id: "3-elm-court",
+    id: "issue-4",
+    publicId: "z2r8c5m7q3w6d9f1",
     address: "3 Elm Court, HX2 9JF",
     description: "Leaking kitchen tap — plumber scheduled.",
     status: "contractor-scheduled",
@@ -237,13 +242,13 @@ export const calls: Call[] = Array.from({ length: 11 }).map((_, i) => ({
   duration: "1:28",
   address: "59 Wakefield Rd",
   status: i === 0 ? "fail" : "pass",
-  issueId: "59-wakefield-road",
+  issueId: "k7q2m4p8n6x1b4h9",
   summary: sharedSummary,
   transcript: sharedTranscript,
 }));
 
-export function getIssueById(id: string): Issue | undefined {
-  return issues.find((issue) => issue.id === id);
+export function getIssueByPublicId(publicId: string): Issue | undefined {
+  return issues.find((issue) => issue.publicId === publicId);
 }
 
 export function getCallById(id: string): Call | undefined {
@@ -254,11 +259,11 @@ export function getAdjacentIssueIds(id: string): {
   prev?: string;
   next?: string;
 } {
-  const idx = issues.findIndex((issue) => issue.id === id);
+  const idx = issues.findIndex((issue) => issue.publicId === id);
   if (idx < 0) return {};
   return {
-    prev: idx > 0 ? issues[idx - 1]?.id : undefined,
-    next: idx < issues.length - 1 ? issues[idx + 1]?.id : undefined,
+    prev: idx > 0 ? issues[idx - 1]?.publicId : undefined,
+    next: idx < issues.length - 1 ? issues[idx + 1]?.publicId : undefined,
   };
 }
 

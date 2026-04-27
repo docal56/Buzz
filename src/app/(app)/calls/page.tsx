@@ -127,7 +127,7 @@ export default function CallLogsPage() {
         onClose={() => setSelectedCallId(undefined)}
         onViewIssue={
           selectedCall?.issueId
-            ? () => router.push(`/open-issues/${selectedCall.issueId}`)
+            ? () => router.push(`/issues/${selectedCall.issueId}`)
             : undefined
         }
         open={Boolean(selectedCall)}

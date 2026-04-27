@@ -21,6 +21,7 @@ import type * as issues from "../issues.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_channels from "../lib/channels.js";
 import type * as lib_elevenlabs from "../lib/elevenlabs.js";
+import type * as lib_publicIds from "../lib/publicIds.js";
 import type * as orgs from "../orgs.js";
 import type * as users from "../users.js";
 import type * as webhookEvents from "../webhookEvents.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   "lib/auth": typeof lib_auth;
   "lib/channels": typeof lib_channels;
   "lib/elevenlabs": typeof lib_elevenlabs;
+  "lib/publicIds": typeof lib_publicIds;
   orgs: typeof orgs;
   users: typeof users;
   webhookEvents: typeof webhookEvents;

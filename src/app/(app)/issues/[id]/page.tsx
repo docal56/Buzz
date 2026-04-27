@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { use, useMemo, useState } from "react";
 import {
   getAdjacentIssueIds,
-  getIssueById,
+  getIssueByPublicId,
   type Issue,
   type TimelineItem as MockTimelineItem,
 } from "@/app/(app)/_mock-data";
@@ -75,7 +75,7 @@ export default function IssueDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const issue = getIssueById(id);
+  const issue = getIssueByPublicId(id);
   const [update, setUpdate] = useState("");
 
   const adjacent = useMemo(() => getAdjacentIssueIds(id), [id]);
@@ -86,8 +86,8 @@ export default function IssueDetailPage({
         header={
           <PageHeaderDetail
             current="Not found"
-            onBack={() => router.push("/")}
-            parent="Open Issues"
+            onBack={() => router.push("/issues")}
+            parent="Issues"
           />
         }
       >
@@ -119,18 +119,18 @@ export default function IssueDetailPage({
       header={
         <PageHeaderDetail
           current={issue.address}
-          onBack={() => router.push("/")}
+          onBack={() => router.push("/issues")}
           onNext={
             adjacent.next
-              ? () => router.push(`/open-issues/${adjacent.next}`)
+              ? () => router.push(`/issues/${adjacent.next}`)
               : undefined
           }
           onPrev={
             adjacent.prev
-              ? () => router.push(`/open-issues/${adjacent.prev}`)
+              ? () => router.push(`/issues/${adjacent.prev}`)
               : undefined
           }
-          parent="Open Issues"
+          parent="Issues"
         />
       }
       variant="detail"

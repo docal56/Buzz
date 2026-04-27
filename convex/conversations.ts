@@ -14,6 +14,7 @@ import {
   parseDataCollectionResults,
 } from "./elevenlabs/dataCollection";
 import { requireUserAndOrg } from "./lib/auth";
+import { createPublicId } from "./lib/publicIds";
 
 const messageValidator = v.object({
   role: v.string(),
@@ -47,6 +48,20 @@ const normalizedValidator = v.object({
   ),
   dataCollectionResultsRaw: v.any(),
 });
+
+async function createUniqueIssuePublicId(ctx: MutationCtx, orgId: Id<"orgs">) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const publicId = createPublicId();
+    const existing = await ctx.db
+      .query("issues")
+      .withIndex("by_org_and_public_id", (q) =>
+        q.eq("orgId", orgId).eq("publicId", publicId),
+      )
+      .first();
+    if (!existing) return publicId;
+  }
+  throw new Error("Could not allocate issue public id");
+}
 
 const extractedFieldsValidator = v.object({
   shouldCreateIssue: v.boolean(),
@@ -521,6 +536,11 @@ export const createIssueFromConversation = internalMutation({
       )
       .first();
     if (existingIssue) {
+      if (!existingIssue.publicId) {
+        await ctx.db.patch(existingIssue._id, {
+          publicId: await createUniqueIssuePublicId(ctx, conversation.orgId),
+        });
+      }
       await ctx.db.patch(conversationId, { issueId: existingIssue._id });
       return;
     }
@@ -536,6 +556,9 @@ export const createIssueFromConversation = internalMutation({
       contactEmail: null,
       summary: fields.issueSummary ?? "(no summary)",
       softDeleted: false,
+    });
+    await ctx.db.patch(newIssueId, {
+      publicId: await createUniqueIssuePublicId(ctx, conversation.orgId),
     });
 
     await ctx.db.patch(conversationId, { issueId: newIssueId });

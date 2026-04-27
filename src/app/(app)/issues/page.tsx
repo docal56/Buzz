@@ -17,11 +17,11 @@ import {
   type IssueStatus,
   issueStatusColumns,
   issues as seedIssues,
-} from "./_mock-data";
+} from "../_mock-data";
 
 function issueToCard(issue: Issue): KanbanCardData {
   return {
-    id: issue.id,
+    id: issue.publicId,
     columnId: issue.status,
     title: issue.address,
     description: issue.description,
@@ -87,11 +87,11 @@ export default function OpenIssuesPage() {
         cards={cards}
         className="min-h-0 flex-1"
         columns={columns}
-        onCardClick={(cardId) => router.push(`/open-issues/${cardId}`)}
+        onCardClick={(cardId) => router.push(`/issues/${cardId}`)}
         onCardMove={(cardId, toColumnId) =>
           setIssues((curr) =>
             curr.map((issue) =>
-              issue.id === cardId
+              issue.publicId === cardId
                 ? { ...issue, status: toColumnId as IssueStatus }
                 : issue,
             ),
