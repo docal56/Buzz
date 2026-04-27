@@ -3,7 +3,7 @@ import type { Doc } from "./_generated/dataModel";
 import { mutation, type QueryCtx, query } from "./_generated/server";
 import { requireUserAndOrg } from "./lib/auth";
 
-const STATUSES = [
+export const STATUSES = [
   "new",
   "in-progress",
   "contractor-scheduled",
@@ -27,7 +27,7 @@ async function issueWithDetails(ctx: QueryCtx, issue: Doc<"issues">) {
     .query("issueUpdates")
     .withIndex("by_issue", (q) => q.eq("issueId", issue._id))
     .order("asc")
-    .collect();
+    .take(100);
   const filteredTimeline = timeline.filter((t) => !t.softDeleted);
   return {
     ...issue,
@@ -38,13 +38,10 @@ async function issueWithDetails(ctx: QueryCtx, issue: Doc<"issues">) {
 }
 
 export const listByStatus = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { limitPerStatus: v.optional(v.number()) },
+  handler: async (ctx, args) => {
     const { org } = await requireUserAndOrg(ctx);
-    const rows = await ctx.db
-      .query("issues")
-      .withIndex("by_org", (q) => q.eq("orgId", org._id))
-      .collect();
+    const limitPerStatus = Math.min(args.limitPerStatus ?? 100, 200);
     const grouped: Record<
       Status,
       Array<Doc<"issues"> & { publicId: string }>
@@ -55,12 +52,20 @@ export const listByStatus = query({
       "awaiting-follow-up": [],
       closed: [],
     };
-    for (const issue of rows) {
-      if (issue.softDeleted) continue;
-      grouped[issue.status].push({
-        ...issue,
-        publicId: issue.publicId ?? issue._id,
-      });
+    for (const status of STATUSES) {
+      const rows = await ctx.db
+        .query("issues")
+        .withIndex("by_org_and_status", (q) =>
+          q.eq("orgId", org._id).eq("status", status),
+        )
+        .order("desc")
+        .take(limitPerStatus);
+      grouped[status] = rows
+        .filter((issue) => !issue.softDeleted)
+        .map((issue) => ({
+          ...issue,
+          publicId: issue.publicId ?? issue._id,
+        }));
     }
     return grouped;
   },
@@ -93,7 +98,7 @@ export const getByPublicId = query({
       issue = legacyId ? await ctx.db.get(legacyId) : null;
     }
     if (!issue || issue.orgId !== org._id || issue.softDeleted) {
-      throw new Error("Not found");
+      return null;
     }
     return await issueWithDetails(ctx, issue);
   },

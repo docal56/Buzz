@@ -1,8 +1,8 @@
 "use client";
 
+import { usePaginatedQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { type Call, calls, getCallById } from "@/app/(app)/_mock-data";
 import { PageContent } from "@/components/patterns/app-shell";
 import { CallDetailSidePanel } from "@/components/patterns/call-detail-side-panel";
 import {
@@ -15,8 +15,127 @@ import { DropdownOption } from "@/components/ui/dropdown-option";
 import { DropdownTrigger } from "@/components/ui/dropdown-trigger";
 import { Icon } from "@/components/ui/icon";
 import { LabelSmall } from "@/components/ui/label-small";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 
-const columns: DataTableColumn<Call>[] = [
+type Conversation = Doc<"conversations"> & {
+  agent: Doc<"agents"> | null;
+  issue: Doc<"issues"> | null;
+};
+
+type CallRow = {
+  id: string;
+  conversation: Conversation;
+  date: string;
+  agent: string;
+  duration: string;
+  address: string;
+  status: "pass" | "fail";
+  issuePublicId?: string;
+  summary: string;
+  transcript: Array<{
+    id: string;
+    variant: "incoming" | "outgoing";
+    body: string;
+  }>;
+};
+
+type OutcomeFilter = "all" | "pass" | "failed";
+type DateFilter = "all" | "week" | "today";
+type CallOutcome = "success" | "failure" | "unknown";
+type CallQueryArgs = {
+  channel: "call";
+  callOutcome?: CallOutcome;
+  dateRange?: { fromSecs: number; toSecs: number };
+};
+
+const outcomeFilterLabels: Record<OutcomeFilter, string> = {
+  all: "All outcomes",
+  pass: "Pass",
+  failed: "Failed",
+};
+
+const dateFilterLabels: Record<DateFilter, string> = {
+  all: "All time",
+  week: "This week",
+  today: "Today",
+};
+
+function formatDate(unixSecs: number): string {
+  return new Date(unixSecs * 1000).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatDuration(seconds: number | null): string {
+  if (seconds === null) return "-";
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}:${remainder.toString().padStart(2, "0")}`;
+}
+
+function conversationToRow(conversation: Conversation): CallRow {
+  const extracted = conversation.extractedFields;
+  const address = extracted?.address ?? conversation.subject ?? "No address";
+  return {
+    id: conversation._id,
+    conversation,
+    date: formatDate(conversation.occurredAtUnixSecs),
+    agent: conversation.agent?.name ?? "Unknown agent",
+    duration: formatDuration(conversation.callDurationSecs),
+    address,
+    status: conversation.callSuccessful === "failure" ? "fail" : "pass",
+    issuePublicId:
+      conversation.issue?.publicId ?? conversation.issueId ?? undefined,
+    summary:
+      extracted?.issueSummary ??
+      conversation.bodyText ??
+      "No call summary available.",
+    transcript:
+      conversation.messages?.map((message, index) => ({
+        id: `${conversation._id}:${index}`,
+        variant:
+          message.role === "agent"
+            ? ("incoming" as const)
+            : ("outgoing" as const),
+        body: message.body,
+      })) ?? [],
+  };
+}
+
+function toCallOutcome(filter: OutcomeFilter): CallOutcome | undefined {
+  if (filter === "pass") return "success";
+  if (filter === "failed") return "failure";
+  return undefined;
+}
+
+function startOfToday() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function dateRangeForFilter(filter: DateFilter) {
+  if (filter === "all") return undefined;
+
+  const toSecs = Math.ceil(Date.now() / 1000);
+  const from = startOfToday();
+
+  if (filter === "week") {
+    const day = from.getDay();
+    const daysSinceMonday = day === 0 ? 6 : day - 1;
+    from.setDate(from.getDate() - daysSinceMonday);
+  }
+
+  return {
+    fromSecs: Math.floor(from.getTime() / 1000),
+    toSecs,
+  };
+}
+
+const columns: DataTableColumn<CallRow>[] = [
   { id: "date", header: "Date", cell: (row) => row.date, className: "flex-1" },
   {
     id: "agent",
@@ -51,23 +170,46 @@ const columns: DataTableColumn<Call>[] = [
 
 export default function CallLogsPage() {
   const router = useRouter();
+  const [outcomeFilter, setOutcomeFilter] = useState<OutcomeFilter>("all");
+  const [dateFilter, setDateFilter] = useState<DateFilter>("all");
+  const queryArgs = useMemo((): CallQueryArgs => {
+    const callOutcome = toCallOutcome(outcomeFilter);
+    const dateRange = dateRangeForFilter(dateFilter);
+    return {
+      channel: "call",
+      ...(callOutcome ? { callOutcome } : {}),
+      ...(dateRange ? { dateRange } : {}),
+    };
+  }, [outcomeFilter, dateFilter]);
+  const { results: conversations } = usePaginatedQuery(
+    api.conversations.list,
+    queryArgs,
+    { initialNumItems: 50 },
+  );
   const [selectedCallId, setSelectedCallId] = useState<string | undefined>(
     undefined,
   );
   const [query, setQuery] = useState("");
 
+  const rows = useMemo(
+    () => conversations.map((conversation) => conversationToRow(conversation)),
+    [conversations],
+  );
+
   const filteredCalls = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return calls;
-    return calls.filter(
+    if (!q) return rows;
+    return rows.filter(
       (c) =>
         c.address.toLowerCase().includes(q) ||
         c.agent.toLowerCase().includes(q) ||
         c.date.toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [rows, query]);
 
-  const selectedCall = selectedCallId ? getCallById(selectedCallId) : undefined;
+  const selectedCall = selectedCallId
+    ? rows.find((call) => call.id === selectedCallId)
+    : undefined;
 
   return (
     <PageContent
@@ -85,6 +227,7 @@ export default function CallLogsPage() {
         <DataTable
           columns={columns}
           countLabel={(c) => `${c} Calls`}
+          emptyState="No calls found."
           filters={
             <>
               <DropdownMenu
@@ -92,25 +235,74 @@ export default function CallLogsPage() {
                   <DropdownTrigger
                     leadingIcon={<Icon name="filter" size="sm" />}
                   >
-                    Filter
+                    {outcomeFilterLabels[outcomeFilter]}
                   </DropdownTrigger>
                 }
               >
-                <DropdownOption>Pass</DropdownOption>
-                <DropdownOption>Failed</DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setOutcomeFilter("all");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={outcomeFilter === "all"}
+                >
+                  All outcomes
+                </DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setOutcomeFilter("pass");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={outcomeFilter === "pass"}
+                >
+                  Pass
+                </DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setOutcomeFilter("failed");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={outcomeFilter === "failed"}
+                >
+                  Failed
+                </DropdownOption>
               </DropdownMenu>
               <DropdownMenu
                 trigger={
                   <DropdownTrigger
                     leadingIcon={<Icon name="calendar" size="sm" />}
                   >
-                    All time
+                    {dateFilterLabels[dateFilter]}
                   </DropdownTrigger>
                 }
               >
-                <DropdownOption selected>All time</DropdownOption>
-                <DropdownOption>This week</DropdownOption>
-                <DropdownOption>Today</DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setDateFilter("all");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={dateFilter === "all"}
+                >
+                  All time
+                </DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setDateFilter("week");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={dateFilter === "week"}
+                >
+                  This week
+                </DropdownOption>
+                <DropdownOption
+                  onSelect={() => {
+                    setDateFilter("today");
+                    setSelectedCallId(undefined);
+                  }}
+                  selected={dateFilter === "today"}
+                >
+                  Today
+                </DropdownOption>
               </DropdownMenu>
             </>
           }
@@ -126,8 +318,8 @@ export default function CallLogsPage() {
       <CallDetailSidePanel
         onClose={() => setSelectedCallId(undefined)}
         onViewIssue={
-          selectedCall?.issueId
-            ? () => router.push(`/issues/${selectedCall.issueId}`)
+          selectedCall?.issuePublicId
+            ? () => router.push(`/issues/${selectedCall.issuePublicId}`)
             : undefined
         }
         open={Boolean(selectedCall)}

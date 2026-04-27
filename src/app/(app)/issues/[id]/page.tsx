@@ -1,13 +1,8 @@
 "use client";
 
+import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { use, useMemo, useState } from "react";
-import {
-  getAdjacentIssueIds,
-  getIssueByPublicId,
-  type Issue,
-  type TimelineItem as MockTimelineItem,
-} from "@/app/(app)/_mock-data";
 import { PageContent } from "@/components/patterns/app-shell";
 import { PageHeaderDetail } from "@/components/patterns/page-header-detail";
 import { SidebarPanel } from "@/components/patterns/sidebar-panel";
@@ -20,30 +15,37 @@ import { TranscriptView } from "@/components/patterns/transcript-view";
 import { UpdateComposer } from "@/components/patterns/update-composer";
 import { Icon } from "@/components/ui/icon";
 import { Inline } from "@/components/ui/inline";
+import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 
-function toPatternTimelineItem(item: MockTimelineItem): PatternTimelineItem {
-  if (item.variant === "avatar-led") {
-    return {
-      id: item.id,
-      variant: "avatar-led",
-      authorName: item.authorName,
-      authorAlt: item.authorAlt,
-      authorImageSrc: item.authorImageSrc,
-      timestamp: item.timestamp,
-      body: item.body,
-    };
-  }
-  return {
-    id: item.id,
-    variant: "icon-led",
-    title: item.title,
-    timestamp: item.timestamp,
-    tone: item.tone,
-    icon: <Icon name={item.iconName} size="sm" />,
-  };
+type IssueStatus = Doc<"issues">["status"];
+type IssueListItem = Doc<"issues"> & { publicId: string };
+type IssueUpdate = Doc<"issueUpdates">;
+
+const statusOrder: IssueStatus[] = [
+  "new",
+  "in-progress",
+  "contractor-scheduled",
+  "awaiting-follow-up",
+  "closed",
+];
+
+function formatDate(value: number): string {
+  return new Date(value).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
-function statusLabel(status: Issue["status"]): string {
+function formatDuration(seconds: number | null): string | undefined {
+  if (seconds === null) return undefined;
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}:${remainder.toString().padStart(2, "0")}`;
+}
+
+function statusLabel(status: IssueStatus): string {
   switch (status) {
     case "new":
       return "New Issue";
@@ -51,12 +53,14 @@ function statusLabel(status: Issue["status"]): string {
       return "In Progress";
     case "contractor-scheduled":
       return "Contractor Scheduled";
-    case "completed":
-      return "Completed";
+    case "awaiting-follow-up":
+      return "Awaiting Follow-up";
+    case "closed":
+      return "Closed";
   }
 }
 
-function statusIcon(status: Issue["status"]) {
+function statusIcon(status: IssueStatus) {
   const name =
     status === "new"
       ? "status-new"
@@ -64,8 +68,43 @@ function statusIcon(status: Issue["status"]) {
         ? "status-in-progress"
         : status === "contractor-scheduled"
           ? "calendar"
-          : "completed";
+          : status === "awaiting-follow-up"
+            ? "status-waiting"
+            : "completed";
   return <Icon name={name} size="md" />;
+}
+
+function toPatternTimelineItem(item: IssueUpdate): PatternTimelineItem {
+  if (item.kind === "comment") {
+    return {
+      id: item._id,
+      variant: "avatar-led",
+      authorName: "Team update",
+      authorAlt: "Team update",
+      timestamp: formatDate(item._creationTime),
+      body: item.body ?? "",
+    };
+  }
+
+  const status = (item.metadata as { to?: IssueStatus } | undefined)?.to;
+  const isCreated = item.kind === "created_from_call";
+  return {
+    id: item._id,
+    variant: "icon-led",
+    title: isCreated
+      ? "Tenant reported issue"
+      : `Status changed to ${status ? statusLabel(status) : "new status"}`,
+    timestamp: formatDate(item._creationTime),
+    tone: isCreated ? "purple" : "orange",
+    icon: <Icon name={isCreated ? "phone" : "status-in-progress"} size="sm" />,
+  };
+}
+
+function flattenIssues(
+  grouped: Record<IssueStatus, IssueListItem[]> | undefined,
+): IssueListItem[] {
+  if (!grouped) return [];
+  return statusOrder.flatMap((status) => grouped[status]);
 }
 
 export default function IssueDetailPage({
@@ -75,12 +114,53 @@ export default function IssueDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const issue = getIssueByPublicId(id);
+  const issue = useQuery(api.issues.getByPublicId, { publicId: id });
+  const groupedIssues = useQuery(api.issues.listByStatus, {
+    limitPerStatus: 100,
+  });
+  const addComment = useMutation(api.issueUpdates.addComment);
   const [update, setUpdate] = useState("");
 
-  const adjacent = useMemo(() => getAdjacentIssueIds(id), [id]);
+  const adjacent = useMemo(() => {
+    const allIssues = flattenIssues(groupedIssues);
+    const index = allIssues.findIndex((candidate) => candidate.publicId === id);
+    if (index < 0) return {};
+    return {
+      prev: index > 0 ? allIssues[index - 1]?.publicId : undefined,
+      next:
+        index < allIssues.length - 1
+          ? allIssues[index + 1]?.publicId
+          : undefined,
+    };
+  }, [groupedIssues, id]);
 
-  if (!issue) {
+  const sendUpdate = async () => {
+    if (!issue) return;
+    const body = update.trim();
+    if (!body) return;
+    await addComment({ issueId: issue._id, body });
+    setUpdate("");
+  };
+
+  if (issue === undefined) {
+    return (
+      <PageContent
+        header={
+          <PageHeaderDetail
+            current="Loading"
+            onBack={() => router.push("/issues")}
+            parent="Issues"
+          />
+        }
+      >
+        <div className="flex min-h-0 flex-1 items-center justify-center p-2xl text-14 text-foreground-muted">
+          Loading issue...
+        </div>
+      </PageContent>
+    );
+  }
+
+  if (issue === null) {
     return (
       <PageContent
         header={
@@ -99,26 +179,35 @@ export default function IssueDetailPage({
   }
 
   const timelineItems = issue.timeline.map(toPatternTimelineItem);
+  const transcript =
+    issue.primaryConversation?.messages?.map((message, index) => ({
+      id: `${issue.primaryConversationId}:${index}`,
+      variant:
+        message.role === "agent"
+          ? ("incoming" as const)
+          : ("outgoing" as const),
+      body: message.body,
+    })) ?? [];
+  const callDuration = formatDuration(
+    issue.primaryConversation?.callDurationSecs ?? null,
+  );
 
   const detailsContent = (
     <div className="flex flex-col gap-xl">
-      <p className="text-14 text-foreground leading-160">{issue.description}</p>
+      <p className="text-14 text-foreground leading-160">{issue.summary}</p>
       <TimelineView items={timelineItems} />
     </div>
   );
 
   const transcriptContent = (
-    <TranscriptView
-      callDuration={issue.callDuration}
-      messages={issue.transcript}
-    />
+    <TranscriptView callDuration={callDuration} messages={transcript} />
   );
 
   return (
     <PageContent
       header={
         <PageHeaderDetail
-          current={issue.address}
+          current={issue.address ?? "No address"}
           onBack={() => router.push("/issues")}
           onNext={
             adjacent.next
@@ -160,7 +249,9 @@ export default function IssueDetailPage({
             <div className="mx-auto w-full max-w-content">
               <UpdateComposer
                 onAddMedia={() => {}}
-                onSend={() => setUpdate("")}
+                onSend={() => {
+                  void sendUpdate();
+                }}
                 onValueChange={setUpdate}
                 value={update}
               />
@@ -210,7 +301,7 @@ export default function IssueDetailPage({
                     id: "address",
                     label: (
                       <Inline icon={<Icon name="home" size="md" />}>
-                        {issue.contact.fullAddress}
+                        {issue.address ?? "No address"}
                       </Inline>
                     ),
                   },
@@ -218,7 +309,7 @@ export default function IssueDetailPage({
                     id: "name",
                     label: (
                       <Inline icon={<Icon name="user" size="md" />}>
-                        {issue.contact.name}
+                        {issue.contactName ?? "No contact name"}
                       </Inline>
                     ),
                   },
@@ -226,7 +317,7 @@ export default function IssueDetailPage({
                     id: "phone",
                     label: (
                       <Inline icon={<Icon name="phone" size="md" />}>
-                        {issue.contact.phone}
+                        {issue.contactPhone ?? "No phone number"}
                       </Inline>
                     ),
                   },
@@ -234,7 +325,7 @@ export default function IssueDetailPage({
                     id: "email",
                     label: (
                       <Inline icon={<Icon name="email" size="md" />}>
-                        {issue.contact.email}
+                        {issue.contactEmail ?? "No email"}
                       </Inline>
                     ),
                   },

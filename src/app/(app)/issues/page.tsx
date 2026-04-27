@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { PageContent } from "@/components/patterns/app-shell";
@@ -11,30 +12,44 @@ import {
 import { PageHeaderList } from "@/components/patterns/page-header-list";
 import { SearchHeader } from "@/components/patterns/search-header";
 import { Icon } from "@/components/ui/icon";
-import { Label } from "@/components/ui/label";
-import {
-  type Issue,
-  type IssueStatus,
-  issueStatusColumns,
-  issues as seedIssues,
-} from "../_mock-data";
+import { api } from "@/convex/_generated/api";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 
-function issueToCard(issue: Issue): KanbanCardData {
+type IssueStatus = Doc<"issues">["status"];
+type IssueListItem = Doc<"issues"> & { publicId: string };
+
+const issueStatusColumns: Array<{
+  id: IssueStatus;
+  title: string;
+  defaultCollapsed?: boolean;
+}> = [
+  { id: "new", title: "New Issues" },
+  { id: "in-progress", title: "In Progress" },
+  { id: "contractor-scheduled", title: "Contractor Scheduled" },
+  { id: "awaiting-follow-up", title: "Awaiting Follow-up" },
+  { id: "closed", title: "Closed", defaultCollapsed: true },
+];
+
+function issueToCard(issue: IssueListItem): KanbanCardData {
   return {
-    id: issue.publicId,
+    id: issue._id,
     columnId: issue.status,
-    title: issue.address,
-    description: issue.description,
-    timestamp: issue.reportedAt,
-    badge: issue.urgent ? (
-      <Label variant="destructive">Urgent</Label>
-    ) : undefined,
+    title: issue.address ?? "No address",
+    description: issue.summary,
+    timestamp: new Date(issue._creationTime).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }),
   };
 }
 
 export default function OpenIssuesPage() {
   const router = useRouter();
-  const [issues, setIssues] = useState<Issue[]>(seedIssues);
+  const groupedIssues = useQuery(api.issues.listByStatus, {
+    limitPerStatus: 100,
+  });
+  const updateStatus = useMutation(api.issues.updateStatus);
   const [collapsedColumns, setCollapsedColumns] = useState<
     Record<IssueStatus, boolean>
   >(() => {
@@ -45,6 +60,11 @@ export default function OpenIssuesPage() {
     return initial;
   });
   const [query, setQuery] = useState("");
+
+  const issues = useMemo(() => {
+    if (!groupedIssues) return [];
+    return issueStatusColumns.flatMap((column) => groupedIssues[column.id]);
+  }, [groupedIssues]);
 
   const columns: KanbanColumnDef[] = useMemo(
     () =>
@@ -61,12 +81,18 @@ export default function OpenIssuesPage() {
     if (!q) return issues;
     return issues.filter(
       (issue) =>
-        issue.address.toLowerCase().includes(q) ||
-        issue.description.toLowerCase().includes(q),
+        (issue.address ?? "").toLowerCase().includes(q) ||
+        issue.summary.toLowerCase().includes(q),
     );
   }, [issues, query]);
 
   const cards = filteredIssues.map(issueToCard);
+
+  const issueById = useMemo(() => {
+    const map = new Map<Id<"issues">, IssueListItem>();
+    for (const issue of issues) map.set(issue._id, issue);
+    return map;
+  }, [issues]);
 
   return (
     <PageContent
@@ -87,15 +113,15 @@ export default function OpenIssuesPage() {
         cards={cards}
         className="min-h-0 flex-1"
         columns={columns}
-        onCardClick={(cardId) => router.push(`/issues/${cardId}`)}
+        onCardClick={(cardId) => {
+          const issue = issueById.get(cardId as Id<"issues">);
+          if (issue) router.push(`/issues/${issue.publicId}`);
+        }}
         onCardMove={(cardId, toColumnId) =>
-          setIssues((curr) =>
-            curr.map((issue) =>
-              issue.publicId === cardId
-                ? { ...issue, status: toColumnId as IssueStatus }
-                : issue,
-            ),
-          )
+          void updateStatus({
+            id: cardId as Id<"issues">,
+            status: toColumnId as IssueStatus,
+          })
         }
         onColumnCollapseChange={(columnId, collapsed) =>
           setCollapsedColumns((curr) => ({

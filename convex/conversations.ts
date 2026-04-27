@@ -237,9 +237,11 @@ export const list = query({
     const page = await baseQuery.paginate(args.paginationOpts);
 
     const agentCache = new Map<Id<"agents">, Doc<"agents"> | null>();
+    const issueCache = new Map<Id<"issues">, Doc<"issues"> | null>();
     const hydrated = await Promise.all(
       page.page.map(async (doc) => {
         let agent: Doc<"agents"> | null = null;
+        let issue: Doc<"issues"> | null = null;
         if (doc.callAgentId) {
           if (agentCache.has(doc.callAgentId)) {
             agent = agentCache.get(doc.callAgentId) ?? null;
@@ -248,7 +250,15 @@ export const list = query({
             agentCache.set(doc.callAgentId, agent);
           }
         }
-        return { ...doc, agent };
+        if (doc.issueId) {
+          if (issueCache.has(doc.issueId)) {
+            issue = issueCache.get(doc.issueId) ?? null;
+          } else {
+            issue = await ctx.db.get(doc.issueId);
+            issueCache.set(doc.issueId, issue);
+          }
+        }
+        return { ...doc, agent, issue };
       }),
     );
 
