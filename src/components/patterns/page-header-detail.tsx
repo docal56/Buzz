@@ -29,7 +29,7 @@ export function PageHeaderDetail({
       )}
     >
       <Breadcrumb current={current} onBack={onBack} parent={parent} />
-      <div className="flex items-center gap-xs">
+      <div className="flex shrink-0 items-center gap-xs">
         <IconButton
           aria-label="Previous"
           icon={<Icon name="arrow-up" size="sm" />}

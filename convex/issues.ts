@@ -167,6 +167,63 @@ export const updateStatus = mutation({
   },
 });
 
+export const updateContractor = mutation({
+  args: {
+    id: v.id("issues"),
+    contractorName: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args) => {
+    const { user, org } = await requireUserAndOrg(ctx);
+    const issue = await ctx.db.get(args.id);
+    if (!issue || issue.orgId !== org._id || issue.softDeleted) {
+      throw new Error("Not found");
+    }
+    const next = args.contractorName?.trim() || null;
+    const previous = issue.contractorName ?? null;
+    if (previous === next) return;
+    await ctx.db.patch(args.id, { contractorName: next });
+    await ctx.db.insert("issueUpdates", {
+      orgId: org._id,
+      issueId: args.id,
+      kind: "contractor_change",
+      authorUserId: user._id,
+      metadata: { from: previous, to: next },
+      dedupeKey: null,
+      softDeleted: false,
+    });
+  },
+});
+
+export const updateScheduledDate = mutation({
+  args: {
+    id: v.id("issues"),
+    scheduledDate: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args) => {
+    const { user, org } = await requireUserAndOrg(ctx);
+    const issue = await ctx.db.get(args.id);
+    if (!issue || issue.orgId !== org._id || issue.softDeleted) {
+      throw new Error("Not found");
+    }
+    const next = args.scheduledDate?.trim() || null;
+    if (next && !/^\d{4}-\d{2}-\d{2}$/.test(next)) {
+      throw new Error("Scheduled date must use YYYY-MM-DD format");
+    }
+    const previous = issue.scheduledDate ?? null;
+    if (previous === next) return;
+    await ctx.db.patch(args.id, { scheduledDate: next });
+    await ctx.db.insert("issueUpdates", {
+      orgId: org._id,
+      issueId: args.id,
+      kind: "scheduled_date_change",
+      authorUserId: user._id,
+      metadata: { from: previous, to: next },
+      dedupeKey: null,
+      softDeleted: false,
+    });
+  },
+});
+
 export const update = mutation({
   args: {
     id: v.id("issues"),

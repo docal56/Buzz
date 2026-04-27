@@ -20,7 +20,7 @@ export function Breadcrumb({
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "inline-flex items-center gap-md text-14 leading-120",
+        "inline-flex min-w-0 flex-1 items-center gap-md text-14 leading-120",
         className,
       )}
     >
@@ -30,11 +30,13 @@ export function Breadcrumb({
         onClick={onBack}
         size="sm"
       />
-      <span className="text-foreground-muted">{parent}</span>
+      <span className="shrink-0 text-foreground-muted">{parent}</span>
       <span aria-hidden="true" className="text-foreground-placeholder">
         /
       </span>
-      <span className="font-medium text-foreground">{current}</span>
+      <span className="min-w-0 truncate font-medium text-foreground">
+        {current}
+      </span>
     </nav>
   );
 }

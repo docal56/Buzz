@@ -190,6 +190,8 @@ export default defineSchema({
     contactName: v.union(v.string(), v.null()),
     contactPhone: v.union(v.string(), v.null()),
     contactEmail: v.union(v.string(), v.null()),
+    contractorName: v.optional(v.union(v.string(), v.null())),
+    scheduledDate: v.optional(v.union(v.string(), v.null())),
     summary: v.string(),
     brief: v.optional(
       v.object({
@@ -221,6 +223,8 @@ export default defineSchema({
     kind: v.union(
       v.literal("comment"),
       v.literal("status_change"),
+      v.literal("contractor_change"),
+      v.literal("scheduled_date_change"),
       v.literal("created_from_call"),
     ),
     authorUserId: v.optional(v.id("users")),

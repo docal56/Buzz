@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { PageContent } from "@/components/patterns/app-shell";
 import { PageHeaderDetail } from "@/components/patterns/page-header-detail";
 import { TabbedContent } from "@/components/patterns/tabbed-content";
@@ -13,9 +13,13 @@ import {
 import { TranscriptView } from "@/components/patterns/transcript-view";
 import { UpdateComposer } from "@/components/patterns/update-composer";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { DropdownOption } from "@/components/ui/dropdown-option";
+import { DropdownTrigger } from "@/components/ui/dropdown-trigger";
 import { Icon } from "@/components/ui/icon";
 import { IconButton } from "@/components/ui/icon-button";
 import { Inline } from "@/components/ui/inline";
+import { TextInput } from "@/components/ui/text-input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
@@ -81,7 +85,7 @@ function statusLabel(status: IssueStatus): string {
   }
 }
 
-function statusIcon(status: IssueStatus) {
+function statusIcon(status: IssueStatus, size: "sm" | "md" = "md") {
   const name =
     status === "new"
       ? "status-new"
@@ -92,7 +96,28 @@ function statusIcon(status: IssueStatus) {
           : status === "awaiting-follow-up"
             ? "status-waiting"
             : "completed";
-  return <Icon name={name} size="md" />;
+  return <Icon name={name} size={size} />;
+}
+
+function isIssueStatus(value: unknown): value is IssueStatus {
+  return (
+    value === "new" ||
+    value === "in-progress" ||
+    value === "contractor-scheduled" ||
+    value === "awaiting-follow-up" ||
+    value === "closed"
+  );
+}
+
+function formatScheduledDate(value: string | null | undefined): string {
+  if (!value) return "Add date work scheduled for";
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return value;
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function userDisplayName(user: Doc<"users"> | null | undefined): string {
@@ -172,8 +197,37 @@ function toPatternTimelineItem(
     };
   }
 
-  const status = (item.metadata as { to?: IssueStatus } | undefined)?.to;
+  const metadata = item.metadata as
+    | { to?: IssueStatus | string | null }
+    | undefined;
+  const status = isIssueStatus(metadata?.to) ? metadata.to : undefined;
   const isCreated = item.kind === "created_from_call";
+  if (item.kind === "contractor_change") {
+    const contractor = typeof metadata?.to === "string" ? metadata.to : null;
+    return {
+      id: item._id,
+      variant: "icon-led",
+      title: contractor
+        ? `Contractor set to ${contractor}`
+        : "Contractor cleared",
+      timestamp: formatTimelineTime(item._creationTime),
+      tone: "orange",
+      icon: <Icon name="contact" size="sm" />,
+    };
+  }
+  if (item.kind === "scheduled_date_change") {
+    const scheduledDate = typeof metadata?.to === "string" ? metadata.to : null;
+    return {
+      id: item._id,
+      variant: "icon-led",
+      title: scheduledDate
+        ? `Scheduled date set to ${formatScheduledDate(scheduledDate)}`
+        : "Scheduled date cleared",
+      timestamp: formatTimelineTime(item._creationTime),
+      tone: "orange",
+      icon: <Icon name="calendar" size="sm" />,
+    };
+  }
   return {
     id: item._id,
     variant: "icon-led",
@@ -186,7 +240,13 @@ function toPatternTimelineItem(
         : item._creationTime,
     ),
     tone: isCreated ? "purple" : "orange",
-    icon: <Icon name={isCreated ? "phone" : "status-in-progress"} size="sm" />,
+    icon: isCreated ? (
+      <Icon name="phone" size="sm" />
+    ) : status ? (
+      statusIcon(status, "sm")
+    ) : (
+      <Icon name="status-in-progress" size="sm" />
+    ),
   };
 }
 
@@ -211,10 +271,24 @@ export default function IssueDetailPage({
   const addComment = useMutation(api.issueUpdates.addComment);
   const editComment = useMutation(api.issueUpdates.editComment);
   const deleteComment = useMutation(api.issueUpdates.deleteComment);
+  const updateStatus = useMutation(api.issues.updateStatus);
+  const updateContractor = useMutation(api.issues.updateContractor);
+  const updateScheduledDate = useMutation(api.issues.updateScheduledDate);
   const [update, setUpdate] = useState("");
+  const [contractorName, setContractorName] = useState("");
+  const [scheduledDate, setScheduledDate] = useState("");
   const [editingUpdateId, setEditingUpdateId] =
     useState<Id<"issueUpdates"> | null>(null);
   const [editBody, setEditBody] = useState("");
+  const issueId = issue?._id;
+  const issueContractorName = issue?.contractorName ?? "";
+  const issueScheduledDate = issue?.scheduledDate ?? "";
+
+  useEffect(() => {
+    if (!issueId) return;
+    setContractorName(issueContractorName);
+    setScheduledDate(issueScheduledDate);
+  }, [issueId, issueContractorName, issueScheduledDate]);
 
   const adjacent = useMemo(() => {
     const allIssues = flattenIssues(groupedIssues);
@@ -258,6 +332,23 @@ export default function IssueDetailPage({
   const deleteUpdate = async (item: IssueUpdate) => {
     if (editingUpdateId === item._id) cancelEditUpdate();
     await deleteComment({ issueUpdateId: item._id });
+  };
+
+  const saveContractor = async () => {
+    if (!issue) return;
+    const next = contractorName.trim() || null;
+    if ((issue.contractorName ?? null) === next) {
+      setContractorName(next ?? "");
+      return;
+    }
+    await updateContractor({ id: issue._id, contractorName: next });
+  };
+
+  const saveScheduledDate = async (value: string) => {
+    if (!issue) return;
+    const next = value || null;
+    if ((issue.scheduledDate ?? null) === next) return;
+    await updateScheduledDate({ id: issue._id, scheduledDate: next });
   };
 
   const copyTenantDetails = async () => {
@@ -431,21 +522,62 @@ export default function IssueDetailPage({
               Issue Status
             </h2>
             <div className="flex flex-col gap-lg text-14 leading-120">
-              <Inline icon={statusIcon(issue.status)}>
-                {statusLabel(issue.status)}
-              </Inline>
-              <Inline
-                className="text-foreground-placeholder"
-                icon={<Icon name="contact" size="md" />}
+              <DropdownMenu
+                trigger={
+                  <DropdownTrigger
+                    className="w-full justify-start"
+                    leadingIcon={statusIcon(issue.status)}
+                  >
+                    {statusLabel(issue.status)}
+                  </DropdownTrigger>
+                }
               >
-                Add contractor
-              </Inline>
-              <Inline
-                className="text-foreground-placeholder"
-                icon={<Icon name="calendar" size="md" />}
-              >
-                Add date work scheduled for
-              </Inline>
+                {statusOrder.map((status) => (
+                  <DropdownOption
+                    icon={statusIcon(status)}
+                    key={status}
+                    onSelect={() => {
+                      if (status !== issue.status) {
+                        void updateStatus({ id: issue._id, status });
+                      }
+                    }}
+                    selected={status === issue.status}
+                  >
+                    {statusLabel(status)}
+                  </DropdownOption>
+                ))}
+              </DropdownMenu>
+              <TextInput
+                aria-label="Contractor"
+                leadingIcon={<Icon name="contact" size="md" />}
+                onBlur={() => {
+                  void saveContractor();
+                }}
+                onChange={(event) => setContractorName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.currentTarget.blur();
+                  }
+                }}
+                placeholder="Add contractor"
+                value={contractorName}
+                wrapperClassName="w-full"
+              />
+              <TextInput
+                aria-label="Date work scheduled for"
+                leadingIcon={<Icon name="calendar" size="md" />}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  setScheduledDate(next);
+                  void saveScheduledDate(next);
+                }}
+                title={
+                  scheduledDate ? formatScheduledDate(scheduledDate) : undefined
+                }
+                type="date"
+                value={scheduledDate}
+                wrapperClassName="w-full"
+              />
             </div>
           </div>
 
