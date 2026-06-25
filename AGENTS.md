@@ -41,12 +41,17 @@ This project uses:
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
+- shadcn/ui for the design system
 - Convex backend functions
 - Vercel hosting
 
 Prefer established framework patterns over custom infrastructure.
 
 Keep frontend UI code in `src/app` unless a clearer structure is introduced intentionally.
+
+Use shadcn/ui components from `src/components/ui` as the default building blocks for interface work. Do not create one-off versions of common controls such as buttons, inputs, dialogs, tabs, menus, badges, cards, sheets, separators, or loading skeletons unless there is a clear product reason.
+
+Use the shared `cn` helper from `src/lib/utils` for conditional class names.
 
 Keep Convex backend functions in `convex`.
 
@@ -61,6 +66,33 @@ This repo uses a recent version of Next.js. APIs and conventions may differ from
 Before making framework-level changes, check the current local docs or official docs for the installed version.
 
 Prefer App Router patterns. Avoid adding a Pages Router unless there is a strong reason.
+
+## Design System Notes
+
+Buzz uses shadcn/ui with Tailwind CSS variables in `src/app/globals.css`.
+
+Installed starter components include:
+
+- `button`
+- `card`
+- `input`
+- `label`
+- `textarea`
+- `dialog`
+- `dropdown-menu`
+- `tabs`
+- `badge`
+- `separator`
+- `sheet`
+- `skeleton`
+
+When a ticket needs another standard component, add it with:
+
+```bash
+npx shadcn@latest add component-name
+```
+
+Respect the user's product and UX direction. shadcn/ui provides the component foundation, not the final product design.
 
 ## Convex Notes
 

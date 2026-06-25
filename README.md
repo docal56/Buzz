@@ -2,6 +2,8 @@
 
 Buzz is a Next.js app with Convex set up for the backend.
 
+The UI foundation uses shadcn/ui with Tailwind CSS.
+
 ## Local Development
 
 Install dependencies:
@@ -52,4 +54,14 @@ npm run dev         # Start Next.js
 npm run convex:dev  # Start Convex
 npm run build       # Build for production
 npm run lint        # Run lint checks
+```
+
+## Design System
+
+shadcn/ui is set up in `src/components/ui`.
+
+Add more shared UI components with:
+
+```bash
+npx shadcn@latest add component-name
 ```
