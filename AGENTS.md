@@ -42,6 +42,7 @@ This project uses:
 - TypeScript
 - Tailwind CSS
 - shadcn/ui for the design system
+- Clerk for accounts, authentication, and organizations
 - Convex backend functions
 - Vercel hosting
 
@@ -98,6 +99,8 @@ Respect the user's product and UX direction. shadcn/ui provides the component fo
 
 Use Convex for backend data, server functions, and realtime behavior.
 
+Convex is configured to validate Clerk auth tokens in `convex/auth.config.ts`. Clerk's Convex integration expects the JWT template/audience named `convex`.
+
 Run Convex locally with:
 
 ```bash
@@ -106,6 +109,8 @@ npm run convex:dev
 
 Convex local deployment settings are stored in `.env.local`.
 
+The current local Convex deployment also needs `CLERK_FRONTEND_API_URL` set as a Convex backend environment variable. Production will need the equivalent production Clerk Frontend API URL set on the production Convex deployment.
+
 For Vercel production deploys with Convex, the build command should be:
 
 ```bash
@@ -113,6 +118,29 @@ npx convex deploy --cmd 'npm run build'
 ```
 
 Vercel also needs a `CONVEX_DEPLOY_KEY` environment variable generated from the Convex dashboard.
+
+## Clerk Notes
+
+Use Clerk for user accounts, sessions, and team/workspace organizations.
+
+This project is linked to the Clerk application `Buzz New`.
+
+Use Clerk's built-in components for the first version of auth UI unless a ticket explicitly asks for a custom auth experience.
+
+ClerkProvider wraps the app in `src/app/layout.tsx`. Convex must stay inside ClerkProvider so Convex can access Clerk session context.
+
+The project uses Clerk's shadcn theme from `@clerk/ui` so auth screens match the shadcn/ui design system.
+
+Do not expose `CLERK_SECRET_KEY` in client code, logs, screenshots, or committed files.
+
+For local development, Clerk keys are stored in `.env.local`, which is intentionally ignored.
+
+For production on Vercel, add:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `NEXT_PUBLIC_CONVEX_URL`
+- `CONVEX_DEPLOY_KEY`
 
 ## Verification
 

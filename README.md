@@ -4,6 +4,8 @@ Buzz is a Next.js app with Convex set up for the backend.
 
 The UI foundation uses shadcn/ui with Tailwind CSS.
 
+Authentication and team accounts use Clerk.
+
 ## Local Development
 
 Install dependencies:
@@ -37,6 +39,20 @@ npx convex dev
 
 Convex stores local deployment details in `.env.local`, which is intentionally not committed.
 
+Convex is configured to validate Clerk auth tokens in `convex/auth.config.ts`. The current local deployment has `CLERK_FRONTEND_API_URL` set for the Clerk development instance.
+
+## Clerk
+
+This project is linked to the Clerk app `Buzz New`.
+
+Local Clerk keys are stored in `.env.local`, which is intentionally not committed.
+
+The app uses:
+
+- `@clerk/nextjs` for auth
+- `@clerk/ui` for the shadcn theme
+- Clerk Organizations for team accounts
+
 ## Vercel
 
 For Vercel production deploys with Convex, use this build command:
@@ -46,6 +62,13 @@ npx convex deploy --cmd 'npm run build'
 ```
 
 You will also need a `CONVEX_DEPLOY_KEY` environment variable in Vercel. Generate it from the Convex dashboard for the production deployment, then add it to the Vercel project settings.
+
+Vercel also needs the production Clerk environment variables:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+```
 
 ## Scripts
 

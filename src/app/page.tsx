@@ -1,7 +1,10 @@
 "use client";
 
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const messages = useQuery(api.messages.list);
@@ -17,12 +20,31 @@ export default function Home() {
           This is a clean starter app connected to a Convex backend. The next
           decision is what Buzz should do first.
         </p>
-        <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-zinc-500">Convex response</p>
-          <p className="mt-2 text-zinc-950">
+        <div className="mt-8 flex items-center gap-3">
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <Button variant="outline">Sign in</Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button>Create account</Button>
+            </SignUpButton>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+        </div>
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Convex response
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
             {messages?.[0]?.text ?? "Loading backend connection..."}
           </p>
-        </div>
+          </CardContent>
+        </Card>
       </section>
     </main>
   );

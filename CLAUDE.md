@@ -14,11 +14,13 @@ Do not begin substantial implementation work without checking the relevant Linea
 
 ## Build Approach
 
-This project uses Next.js, TypeScript, Tailwind CSS, shadcn/ui, Convex, and Vercel.
+This project uses Next.js, TypeScript, Tailwind CSS, shadcn/ui, Clerk, Convex, and Vercel.
 
 Keep changes small, scoped, and easy for other coding agents to continue.
 
 Use shadcn/ui components from `src/components/ui` as the default interface building blocks. Do not invent custom buttons, inputs, dialogs, cards, menus, tabs, sheets, badges, separators, or skeleton loaders when an existing shadcn component fits.
+
+Use Clerk for authentication, accounts, and organizations. Keep `ClerkProvider` above the Convex provider. Never expose Clerk secret keys.
 
 Do not invent missing requirements. If something is unclear, state the assumption or ask a concise question.
 
